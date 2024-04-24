@@ -4,9 +4,8 @@
 ** File description:
 ** globbing.c
 */
-#include <glob.h>
-#include <sys/stat.h>
-#include "include/my.h"
+
+#include "my.h"
 
 size_t nbr_wdr(const char *str)
 {
