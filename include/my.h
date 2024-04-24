@@ -10,6 +10,8 @@
 #include <sys/wait.h>
 #include <stdbool.h>
 #include <errno.h>
+#include <glob.h>
+#include <sys/stat.h>
 #include "basics.h"
 #include "parsing.h"
 
