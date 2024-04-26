@@ -19,6 +19,11 @@
     #define SEPARATOR_AND "&&"
     #define SEPARATOR_PIPE '|'
 
+typedef enum fd_state_e {
+    INPUT_REDIRECTION = -2,
+    OUTPUT_REDIRECTION = -3,
+} fd_state_t;
+
 typedef struct command_s {
     char *command_line;
     char *command;
@@ -37,6 +42,19 @@ typedef struct redirection_s {
     char *output_file;
     char *input_file;
 } redirection_t;
+
+typedef struct token_s {
+    char *content;
+    char *command;
+    char *separator;
+    struct token_s **under_tokens;
+    int input_redirected;
+    int output_redirected;
+    int input_fd;
+    int output_fd;
+    char *input_file;
+    char *output_file;
+} token_t;
 
 // tools functions
 char **get_bin_path_list(char **env);
@@ -73,7 +91,9 @@ void fill_env(char ***env);
 int my_exit(char *userinput, int *exit);
 
 // Parsing functions
-command_t **get_command_array(char *user_input);
 void destroy_command_array(command_t **command_array);
-int parse_redirection(command_t *command, redirection_t *red);
+int parse_redirection(token_t *token, redirection_t *red);
+void remove_outer_parentheses(char *content_ptr);
+token_t *ll_parser(token_t *head);
+int redirect_tokens(token_t *token);
 #endif
