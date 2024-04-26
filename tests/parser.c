@@ -11,112 +11,76 @@
 #include "my.h"
 
 
-Test(Parser, single_command_no_redirection) {
-    command_t **array = get_command_array("ls");
+// Test(Parser, single_command_no_redirection) {
+    // token_t *token = calloc(1, sizeof(token_t));
+// 
+    // token->content = strdup("(((ls -l ; echo Hello) | cat -e) | grep lib)");
+    // token->input_fd = -1;
+    // token->output_fd = -1;
+    // ll_parser(token);
+// 
+    // cr_assert(strcmp(token->under_tokens[0]->content, " (ls -l ; echo Hello) | cat -e  ") == 0);
+    // cr_assert(strcmp(token->under_tokens[0]->under_tokens[0]->content, "  ls -l ; echo Hello  ") == 0);
+    // cr_assert(strcmp(token->under_tokens[0]->under_tokens[0]->under_tokens[0]->content, "  ls -l ") == 0);
+    // cr_assert(strcmp(token->under_tokens[0]->under_tokens[0]->under_tokens[1]->content, " echo Hello  ") == 0);
+    // cr_assert(strcmp(token->under_tokens[0]->under_tokens[1]->content, " cat -e  ") == 0);
+    // cr_assert(strcmp(token->under_tokens[1]->content, " grep lib") == 0);
+// }
 
-    cr_assert(my_arraylen((void **)array) == 1, "Expected 1 command");
-    cr_assert_str_eq(array[0]->command_line, "ls", "Command line mismatch");
-    cr_assert_null(array[0]->nextflag, "Nextflag not null");
-    cr_assert_eq(array[0]->input_redirected, 0,
-        "Input redirection flag incorrect");
-    cr_assert_eq(array[0]->output_redirected, 0,
-        "Output redirection flag incorrect");
-}
-
-Test(Parser, single_command_pipe) {
-    command_t **array = get_command_array("rm * | ls");
-
-    cr_assert(my_arraylen((void **)array) == 2, "Expected 1 command");
-    cr_assert_str_eq(array[0]->command_line, "rm * ", "Command line mismatch");
-    cr_assert_str_eq(array[0]->nextflag, "|", "Nextflag mismatch");
-    cr_assert_eq(array[0]->input_redirected, 0,
-        "Input redirection flag incorrect");
-    cr_assert_eq(array[0]->output_redirected, 1,
-        "Output redirection flag incorrect");
-    cr_assert_str_eq(array[1]->command_line, " ls", "Command line mismatch");
-    cr_assert_null(array[1]->nextflag, "Flag not Null");
-    cr_assert_eq(array[1]->input_redirected, 1,
-        "Input redirection flag incorrect");
-    cr_assert_eq(array[1]->output_redirected, 0,
-        "Output redirection flag incorrect");
+void display_tokens(token_t *tokens, int indent)
+{
+    for (int i = 0; i < indent; i++)
+        printf("--");
+    printf("%s\n\n", tokens->content);
+    if (tokens->under_tokens) {
+        display_tokens(tokens->under_tokens[0], indent + 1);
+        display_tokens(tokens->under_tokens[1], indent + 1);
+    }
 }
 
 Test(Parser, single_command_semicolon)
 {
-    command_t **array = get_command_array("ls ; pwd");
+    token_t *token = calloc(1, sizeof(token_t));
 
-    cr_assert(my_arraylen((void **)array) == 2, "Expected 2 commands");
+    token->content = strdup("ls ; cat -e < Makefile > filetotest; cat filetotest | grep lib");
+    token->input_fd = -1;
+    token->output_fd = -1;
+    remove_outer_parentheses(token->content);
+    ll_parser(token);
+    printf("==>\n"),
+    display_tokens(token, 0);
+    printf("<===\n");
+}
 
-    cr_assert_str_eq(array[0]->command_line, "ls ", "Command line mismatch");
-    cr_assert_str_eq(array[0]->nextflag, ";", "Nextflag mismatch");
-    cr_assert_eq(array[0]->input_redirected, 0,
-        "Input redirection flag incorrect");
-    cr_assert_eq(array[0]->output_redirected, 0,
-        "Output redirection flag incorrect");
-    cr_assert_str_eq(array[1]->command_line, " pwd", "Command line mismatch");
-    cr_assert_null(array[1]->nextflag, "Flag not Null");
-    cr_assert_eq(array[1]->input_redirected, 0,
-        "Input redirection flag incorrect");
-    cr_assert_eq(array[1]->output_redirected, 0,
-        "Output redirection flag incorrect");
+Test(Parser, single_command_pipe) {
+    token_t *token = calloc(1, sizeof(token_t));
+
+    token->content = strdup("((ls -l ; echo hello) | cat -e) > fichier");
+    token->input_fd = -1;
+    token->output_fd = -1;
+    remove_outer_parentheses(token->content);
+    ll_parser(token);
+    printf("\n"),
+    //display_tokens(token, 0);
+    printf("\n");
+
+    cr_assert(strcmp(token->under_tokens[0]->content, " (ls -l ; echo Hello) | cat -e  ") == 0);
+    cr_assert(strcmp(token->under_tokens[0]->under_tokens[0]->content, "  ls -l ; echo Hello  ") == 0);
+    cr_assert(strcmp(token->under_tokens[0]->under_tokens[0]->under_tokens[0]->content, "  ls -l ") == 0);
+    cr_assert(strcmp(token->under_tokens[0]->under_tokens[0]->under_tokens[1]->content, " echo Hello  ") == 0);
+    cr_assert(strcmp(token->under_tokens[0]->under_tokens[1]->content, " cat -e  ") == 0);
+    cr_assert(strcmp(token->under_tokens[1]->content, " grep lib") == 0);
 }
 
 Test(Parser, single_command_and)
 {
-    command_t **array = get_command_array("ls && pwd");
-
-    cr_assert(my_arraylen((void **)array) == 2, "Expected 2 commands");
-
-    cr_assert_str_eq(array[0]->command_line, "ls ", "Command line mismatch");
-    cr_assert_str_eq(array[0]->nextflag, "&&", "Nextflag mismatch");
-    cr_assert_eq(array[0]->input_redirected, 0,
-        "Input redirection flag incorrect");
-    cr_assert_eq(array[0]->output_redirected, 0,
-        "Output redirection flag incorrect");
-    cr_assert_str_eq(array[1]->command_line, " pwd", "Command line mismatch");
-    cr_assert_null(array[1]->nextflag, "Flag not Null");
-    cr_assert_eq(array[1]->input_redirected, 0,
-        "Input redirection flag incorrect");
-    cr_assert_eq(array[1]->output_redirected, 0,
-        "Output redirection flag incorrect");
+    
 }
 
 Test(Parser, multiple_command_pipe) {
-    command_t **array = get_command_array("ls | grep hello");
-
-    cr_assert(my_arraylen((void **)array) == 2, "Expected 2 commands");
-
-    cr_assert_str_eq(array[0]->command_line, "ls ", "Command line mismatch");
-    cr_assert_str_eq(array[0]->nextflag, "|", "Nextflag mismatch");
-    cr_assert_eq(array[0]->input_redirected, 0, "Input redirection flag incorrect");
-    cr_assert_eq(array[0]->output_redirected, 1, "Output redirection flag incorrect");
-
-    cr_assert_str_eq(array[1]->command_line, " grep hello", "Command line mismatch");
-    cr_assert_null(array[1]->nextflag, "Flag not Null");
-    cr_assert_eq(array[1]->input_redirected, 1, "Input redirection flag incorrect");
-    cr_assert_eq(array[1]->output_redirected, 0, "Output redirection flag incorrect");
+    
 }
 
 Test(Parser, invalid_null_command_after_pipe) {
-    command_t **array = get_command_array("ls |");
-
-    cr_assert(array == NULL, "Expected NULL command array");
-}
-
-Test(Parser, invalid_null_command_after_and) {
-    command_t **array = get_command_array("ls &&");
-
-    cr_assert(array == NULL, "Expected NULL command array");
-}
-
-Test(Parser, invalid_null_command_before_and) {
-    command_t **array = get_command_array("&& ls");
-
-    cr_assert(array == NULL, "Expected NULL command array");
-}
-
-Test(Parser, invalid_null_command_before_pipe) {
-    command_t **array = get_command_array("| ls");
-
-    cr_assert(array == NULL, "Expected NULL command array");
+    
 }

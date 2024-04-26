@@ -6,7 +6,6 @@
 */
 
 #include "my.h"
-#include <fcntl.h>
 #include <string.h>
 
 int my_setenv(char **parsed_input, char ***env, int len_env)
@@ -104,7 +103,7 @@ int process_recursive(token_t *token, char ***env)
     pid_t pid;
 
     if (!token->under_tokens) {
-        exit_status = process_command(token->content, env);
+        exit_status = process_command(token->command, env);
         return exit_status;
     }
     if (token->under_tokens[0]->output_redirected) {
@@ -150,30 +149,33 @@ int process_recursive(token_t *token, char ***env)
 
 int recursive_compute(token_t *token, char ***env, int blocked)
 {
+    redirection_t red = {0};
     int exit_status;
     int saved_out;
     int saved_in;
 
-    if (token->output_fd == OUTPUT_REDIRECTION) {
-        token->output_fd = open(token->output_file, O_WRONLY | O_TRUNC | O_CREAT, 0644);
+    if (parse_redirection(token, &red) == 84)
+        return 84;
+    if (blocked != 1) {
         saved_out = dup(STDOUT_FILENO);
-        dup2(token->output_fd, STDOUT_FILENO);
+        if (token->output_fd != -1)
+            dup2(token->output_fd, STDOUT_FILENO);
     }
-    if (token->input_fd == INPUT_REDIRECTION) {
-        token->input_fd = open(token->input_file, O_RDONLY);
+    if (blocked != 0) {
         saved_in = dup(STDIN_FILENO);
-        dup2(token->input_fd, STDIN_FILENO);
+        if (token->input_fd != -1)
+            dup2(token->input_fd, STDIN_FILENO);
     }
     exit_status = process_recursive(token, env);
-    if (token->output_fd != 1) {
-        dup2(saved_out, STDOUT_FILENO);
-        close(saved_out);
+    if (token->output_fd != -1)
         close(token->output_fd);
+    if (blocked != 1) {
+        close(STDOUT_FILENO);
+        dup2(saved_out, STDOUT_FILENO);
     }
-    if (token->input_fd != 0) {
+    if (blocked != 0) {
+        close(STDIN_FILENO);
         dup2(saved_in, STDIN_FILENO);
-        close(saved_in);
-        close(token->input_fd);
     }
     return exit_status;
 }
@@ -183,11 +185,9 @@ int process_multiple_command(char *user_input, char ***env)
     int exit_status = 0;
     token_t *token = calloc(1, sizeof(token_t));
 
-    token->input_fd = 0;
-    token->output_fd = 1;
+    token->input_fd = -1;
+    token->output_fd = -1;
     token->content = strdup(user_input);
-    parse_token_redirections(token);
-    remove_outer_parentheses(token->content);
     if (!token)
         return 1;
     ll_parser(token);
