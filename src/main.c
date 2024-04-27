@@ -6,6 +6,7 @@
 */
 
 #include "my.h"
+#include "process.h"
 
 int input_not_empty(char *user_input)
 {

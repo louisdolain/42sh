@@ -12,13 +12,14 @@ TEST_FOLDER = ./tests/
 
 MAIN = 	$(SRC_FOLDER)main.c
 
-SRC =	$(SRC_FOLDER)tools.c \
-		$(SRC_FOLDER)process.c \
-		$(SRC_FOLDER)specific_functions.c \
-		$(SRC_FOLDER)cd_function.c \
-		$(SRC_FOLDER)ls_function.c \
-		$(SRC_FOLDER)error_handle.c \
-		$(SRC_FOLDER)env_management.c \
+SRC =	$(SRC_FOLDER)tools/tools.c \
+		$(SRC_FOLDER)process/process_single_command.c \
+		$(SRC_FOLDER)process/process_multiple_command.c \
+		$(SRC_FOLDER)bulletins/cd.c \
+		$(SRC_FOLDER)bulletins/env.c \
+		$(SRC_FOLDER)alias/ls_function.c \
+		$(SRC_FOLDER)error/error_handle.c \
+		$(SRC_FOLDER)bulletins/env_management.c \
 		$(SRC_FOLDER)error/cd_errors.c \
 		$(SRC_FOLDER)bulletins/exit.c \
 		$(SRC_FOLDER)error/execve_errors.c \

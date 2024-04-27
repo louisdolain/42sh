@@ -55,14 +55,13 @@ commands=(
     $'cd /unknownfile\ncd ~\npwd'
     $'pwd'
     $'cd /bin/bash\npwd'clear
-    
+
     $'pwd'
     $'cd /boot'
     $'pwd'
     $'pwd'
     $'cd /tmp'
     $'pwd'
-    $'cd -\n'
     $'cd /var'
     $'pwd'
     $'cd -'
@@ -82,5 +81,7 @@ commands=(
     $'rm -f filetotest; cat -e < Makefile > filetotest; cat filetotest | grep lib'
     $'(ls -l ; echo hello) > file ; cat < file'
     $'((ls -l ; cat < Makefile; echo Hello) | cat -e ; cat Makefile) | grep lib ; cat src/main.c'
+    $'rm -rf gros ; ((ls -l | cat -e) ; mkdir gros ; (ls -l | grep gros) ; rm -rf gros)'
+    $'rm -rf file filetotest'
 )
 generate_tests "${commands[@]}"
