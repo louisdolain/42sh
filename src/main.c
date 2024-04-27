@@ -6,6 +6,7 @@
 */
 
 #include "my.h"
+#include "process.h"
 
 int input_not_empty(char *user_input)
 {
@@ -46,12 +47,8 @@ int mysh(char ***env)
 {
     char *user_input = NULL;
     int exit = 0;
-    int end = 0;
 
-    while (1) {
-        end = get_user_input(&user_input, exit);
-        if (end == EOF)
-            break;
+    while (get_user_input(&user_input, exit) != EOF) {
         if (!input_not_empty(user_input))
             continue;
         replace_endline(user_input);
@@ -59,6 +56,8 @@ int mysh(char ***env)
             break;
         fill_env(env);
         exit = process_multiple_command(user_input, env);
+        free(user_input);
+        user_input = NULL;
     }
     if (isatty(0))
         mini_printf("exit\n");
@@ -68,16 +67,14 @@ int mysh(char ***env)
 
 char **create_env(void)
 {
-    char **env = malloc(sizeof(char *) * 6);
+    char **env = calloc(6, sizeof(char *));
     char pwd[2048];
 
     getcwd(pwd, 2048);
-    env[5] = NULL;
     env[0] = concat_mem("PWD", "=", pwd);
     env[1] = concat_mem("OLDPWD", "=", pwd);
     env[2] = concat_mem("HOME", "=", "/home");
-    env[3] = concat_mem("PATH", "=",
-        "");
+    env[3] = concat_mem("PATH", "=", "");
     env[4] = concat_mem("TERM", "=", "xterm-256color");
     return env;
 }
