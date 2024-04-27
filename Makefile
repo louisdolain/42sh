@@ -12,18 +12,24 @@ TEST_FOLDER = ./tests/
 
 MAIN = 	$(SRC_FOLDER)main.c
 
-SRC =	$(SRC_FOLDER)tools.c \
-		$(SRC_FOLDER)process.c \
-		$(SRC_FOLDER)specific_functions.c \
-		$(SRC_FOLDER)cd_function.c \
-		$(SRC_FOLDER)ls_function.c \
-		$(SRC_FOLDER)error_handle.c \
-		$(SRC_FOLDER)env_management.c \
+SRC =	$(SRC_FOLDER)tools/tools.c \
+		$(SRC_FOLDER)process/process_single_command.c \
+		$(SRC_FOLDER)process/process_multiple_command.c \
+		$(SRC_FOLDER)process/arrow_redirections.c \
+		$(SRC_FOLDER)bulletins/cd.c \
+		$(SRC_FOLDER)bulletins/env.c \
+		$(SRC_FOLDER)alias/ls_function.c \
+		$(SRC_FOLDER)error/error_handle.c \
+		$(SRC_FOLDER)bulletins/env_management.c \
 		$(SRC_FOLDER)error/cd_errors.c \
 		$(SRC_FOLDER)bulletins/exit.c \
 		$(SRC_FOLDER)error/execve_errors.c \
-		$(SRC_FOLDER)parsing/parser.c \
-		$(SRC_FOLDER)parsing/parse_red.c
+		$(SRC_FOLDER)parsing/remove_parentheses.c \
+		$(SRC_FOLDER)parsing/ll_parser.c \
+		$(SRC_FOLDER)parsing/destroy.c \
+		$(SRC_FOLDER)parsing/parse_token_redirections.c \
+		$(SRC_FOLDER)backticks/backticks.c \
+		$(SRC_FOLDER)error/parantheses_error.c
 
 SRC_BASIC =	$(LIB_BASIC_FOLDER)my_printf.c \
 		$(LIB_BASIC_FOLDER)my_printf2.c \
@@ -45,14 +51,14 @@ SRC_BASIC =	$(LIB_BASIC_FOLDER)my_printf.c \
 		$(LIB_BASIC_FOLDER)cleanstr.c \
 		$(LIB_BASIC_FOLDER)open_file.c
 
-SRC_TEST = $(SRC_FOLDER)parsing/parser.c \
-		$(TEST_FOLDER)parser.c \
+SRC_TEST = $(SRC_FOLDER)parsing/*.c \
+		$(TEST_FOLDER)parsing/parser.c \
 
 OBJ_MAIN = $(MAIN:.c=.o)
 OBJ_SRC = $(SRC:.c=.o)
 OBJ_BASIC =	$(SRC_BASIC:.c=.o)
 
-CFLAGS = -Wall -Wextra
+CFLAGS = -Wall -Wextra -g3
 CPPFLAGS = -iquote $(INCLUDE_FOLDER)
 
 LDFLAGS = -L ./
@@ -65,9 +71,9 @@ CC = gcc
 AR = ar rc
 RM = rm -f
 
-TEMP_FILES = *.gc*
+TEMP_FILES = *.gcda* *.gcno* *vgcore*
 
-NAME =	mysh
+NAME =	42sh
 TEST_NAME = tests_run
 LIBNAME = libmy.a
 
