@@ -71,7 +71,7 @@ RM = rm -f
 
 TEMP_FILES = *.gcda* *.gcno* *vgcore*
 
-NAME =	mysh
+NAME =	42sh
 TEST_NAME = tests_run
 LIBNAME = libmy.a
 

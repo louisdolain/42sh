@@ -1,6 +1,6 @@
 name: Chocolatine Github Actions
 env:
-  EXECUTABLES: 'ai'
+  EXECUTABLES: '42sh'
   pwd: "."
 
 on:
