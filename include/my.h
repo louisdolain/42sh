@@ -22,6 +22,7 @@
 typedef enum fd_state_e {
     INPUT_REDIRECTION = -2,
     OUTPUT_REDIRECTION = -3,
+    OUTPUT_DOUBLE_REDIRECTION = -4,
 } fd_state_t;
 
 typedef struct command_s {
@@ -91,9 +92,13 @@ void fill_env(char ***env);
 int my_exit(char *userinput, int *exit);
 
 // Parsing functions
-void destroy_command_array(command_t **command_array);
-int parse_redirection(token_t *token, redirection_t *red);
 void remove_outer_parentheses(char *content_ptr);
 token_t *ll_parser(token_t *head);
 int redirect_tokens(token_t *token);
+
+char *handle_backticks(char *user_input, char ***env);
+int recursive_compute(token_t *token, char ***env);
+int redirect_tokens(token_t *token);
+void parse_token_redirections(token_t *token);
+bool verifiy_parantheses(char *user_input);
 #endif
