@@ -7,6 +7,7 @@
 
 #include "my.h"
 #include "process.h"
+#include "parsing.h"
 
 int process_recursive(token_t *token, char ***env)
 {
@@ -15,7 +16,11 @@ int process_recursive(token_t *token, char ***env)
     pid_t pid;
 
     if (!token->under_tokens) {
-        exit_status = process_command(handle_backticks(token->content, env), env);
+        char *temp = handle_backticks(token->content, env);
+
+        free(token->content);
+        token->content = temp;
+        exit_status = process_command(token->content, env);
         return exit_status;
     }
     if (token->under_tokens[0]->output_redirected && token->under_tokens[0]->output_fd == 1) {
@@ -65,63 +70,46 @@ int recursive_compute(token_t *token, char ***env)
     int saved_out;
     int saved_in;
 
-    if (token->output_fd == OUTPUT_REDIRECTION) {
-        token->output_fd = open(token->output_file, O_WRONLY | O_TRUNC | O_CREAT, 0644);
-        if (token->output_fd == -1) {
-            perror("");
-            return 1;
-        }
-        saved_out = dup(STDOUT_FILENO);
-        dup2(token->output_fd, STDOUT_FILENO);
-    }
-    if (token->output_fd == OUTPUT_DOUBLE_REDIRECTION) {
-        token->output_fd = open(token->output_file, O_WRONLY | O_APPEND | O_CREAT, 0644);
-        if (token->output_fd == -1) {
-            perror("");
-            return 1;
-        }
-        saved_out = dup(STDOUT_FILENO);
-        dup2(token->output_fd, STDOUT_FILENO);
-    }
-    if (token->input_fd == INPUT_REDIRECTION) {
-        token->input_fd = open(token->input_file, O_RDONLY);
-        if (token->input_fd == -1) {
-            perror("");
-            return 1;
-        }
-        saved_in = dup(STDIN_FILENO);
-        dup2(token->input_fd, STDIN_FILENO);
-    }
+    if (open_token_input_redirections(token, &saved_in) == EXIT_FAILURE ||
+        open_token_output_redirections(token, &saved_out) == EXIT_FAILURE ||
+        open_token_double_output_redirections
+        (token, &saved_out) == EXIT_FAILURE)
+        return EXIT_FAILURE;
+    
     exit_status = process_recursive(token, env);
-    if (token->output_fd != 1) {
-        dup2(saved_out, STDOUT_FILENO);
-        close(saved_out);
-        close(token->output_fd);
-    }
-    if (token->input_fd != 0) {
-        dup2(saved_in, STDIN_FILENO);
-        close(saved_in);
-        close(token->input_fd);
-    }
+    close_token_redirections(token, saved_in, saved_out);
     return exit_status;
+}
+
+static token_t *create_token(char *user_input)
+{
+    token_t *token = calloc(1, sizeof(token_t));
+
+    if (!token)
+        return NULL;
+    token->input_fd = 0;
+    token->output_fd = 1;
+    token->content = strdup(user_input);
+    if (!verifiy_parantheses(user_input)) {
+        free(token);
+        return NULL;
+    }
+    return token;
 }
 
 int process_multiple_command(char *user_input, char ***env)
 {
-    token_t *token = calloc(1, sizeof(token_t));
-    token->input_fd = 0;
-    token->output_fd = 1;
-    token->content = strdup(user_input);
+    token_t *token = create_token(user_input);
+    int exit_status = 0;
+
     if (!token)
         return 1;
-    if (!verifiy_parantheses(user_input)) {
-        free(token);
-        return 1;
-    }
     remove_outer_parentheses(token->content);
     parse_token_redirections(token);
     remove_outer_parentheses(token->content);
     ll_parser(token);
     redirect_tokens(token);
-    return recursive_compute(token, env);
+    exit_status = recursive_compute(token, env);
+    destroy_tokens(token);
+    return exit_status;
 }

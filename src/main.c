@@ -60,6 +60,8 @@ int mysh(char ***env)
             break;
         fill_env(env);
         exit = process_multiple_command(user_input, env);
+        free(user_input);
+        user_input = NULL;
     }
     if (isatty(0))
         mini_printf("exit\n");

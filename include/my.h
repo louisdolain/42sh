@@ -42,11 +42,6 @@ void fill_env(char ***env);
 //bulletin
 int my_exit(char *userinput, int *exit);
 
-// Parsing functions
-void remove_outer_parentheses(char *content_ptr);
-token_t *ll_parser(token_t *head);
-int redirect_tokens(token_t *token);
-
 char *handle_backticks(char *user_input, char ***env);
 int recursive_compute(token_t *token, char ***env);
 int redirect_tokens(token_t *token);

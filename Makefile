@@ -15,6 +15,7 @@ MAIN = 	$(SRC_FOLDER)main.c
 SRC =	$(SRC_FOLDER)tools/tools.c \
 		$(SRC_FOLDER)process/process_single_command.c \
 		$(SRC_FOLDER)process/process_multiple_command.c \
+		$(SRC_FOLDER)process/arrow_redirections.c \
 		$(SRC_FOLDER)bulletins/cd.c \
 		$(SRC_FOLDER)bulletins/env.c \
 		$(SRC_FOLDER)alias/ls_function.c \
@@ -25,6 +26,7 @@ SRC =	$(SRC_FOLDER)tools/tools.c \
 		$(SRC_FOLDER)error/execve_errors.c \
 		$(SRC_FOLDER)parsing/remove_parentheses.c \
 		$(SRC_FOLDER)parsing/ll_parser.c \
+		$(SRC_FOLDER)parsing/destroy.c \
 		$(SRC_FOLDER)backticks/backticks.c \
 		$(SRC_FOLDER)error/parantheses_error.c
 
@@ -56,7 +58,7 @@ OBJ_MAIN = $(MAIN:.c=.o)
 OBJ_SRC = $(SRC:.c=.o)
 OBJ_BASIC =	$(SRC_BASIC:.c=.o)
 
-CFLAGS = -Wall -Wextra
+CFLAGS = -Wall -Wextra -g3
 CPPFLAGS = -iquote $(INCLUDE_FOLDER)
 
 LDFLAGS = -L ./

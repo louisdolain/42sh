@@ -25,3 +25,8 @@ typedef struct token_s {
     char *input_file;
     char *output_file;
 } token_t;
+
+void destroy_tokens(token_t *tokens);
+void remove_outer_parentheses(char *content_ptr);
+token_t *ll_parser(token_t *head);
+int redirect_tokens(token_t *token);
