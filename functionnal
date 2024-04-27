@@ -80,5 +80,7 @@ commands=(
     $'ls -l | grep mysh'
     $'ls; ls -l ; cat -e < Makefile | grep lib'
     $'rm -f filetotest; cat -e < Makefile > filetotest; cat filetotest | grep lib'
+    $'(ls -l ; echo hello) > file ; cat < file'
+    $'((ls -l ; cat < Makefile; echo Hello) | cat -e ; cat Makefile) | grep lib ; cat src/main.c'
 )
 generate_tests "${commands[@]}"
