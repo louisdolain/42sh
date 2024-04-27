@@ -51,9 +51,8 @@ SRC_BASIC =	$(LIB_BASIC_FOLDER)my_printf.c \
 		$(LIB_BASIC_FOLDER)cleanstr.c \
 		$(LIB_BASIC_FOLDER)open_file.c
 
-SRC_TEST = $(SRC_FOLDER)parsing/ll_parser.c \
-		$(SRC_FOLDER)parsing/remove_parentheses.c \
-		$(TEST_FOLDER)parser.c \
+SRC_TEST = $(SRC_FOLDER)parsing/*.c \
+		$(TEST_FOLDER)parsing/parser.c \
 
 OBJ_MAIN = $(MAIN:.c=.o)
 OBJ_SRC = $(SRC:.c=.o)
