@@ -47,12 +47,8 @@ int mysh(char ***env)
 {
     char *user_input = NULL;
     int exit = 0;
-    int end = 0;
 
-    while (1) {
-        end = get_user_input(&user_input, exit);
-        if (end == EOF)
-            break;
+    while (get_user_input(&user_input, exit) != EOF) {
         if (!input_not_empty(user_input))
             continue;
         replace_endline(user_input);

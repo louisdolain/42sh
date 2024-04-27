@@ -16,7 +16,8 @@ static bool separator_outer_parentheses(char *line)
     int count = 0;
 
     for (int i = 0; line[i]; i++) {
-        count += (line[i] == '(' ? 1 : line[i] == ')' ? -1 : 0);
+        count += (line[i] == '(' ? 1 : 0);
+        count += (line[i] == ')' ? -1 : 0);
         if ((line[i] == '|' || line[i] == ';' || line[i] == '&') &&
             count == 0) {
             return true;
@@ -30,7 +31,8 @@ static bool redirection_outer_parentheses(char *line)
     int count = 0;
 
     for (int i = 0; line[i]; i++) {
-        count += (line[i] == '(' ? 1 : line[i] == ')' ? -1 : 0);
+        count += (line[i] == '(' ? 1 : 0);
+        count += (line[i] == ')' ? -1 : 0);
         if ((line[i] == '<' || line[i] == '>') &&
             count == 0) {
             return true;
@@ -52,7 +54,8 @@ char *tokenize(char *str, int start, int end)
     return newstr;
 }
 
-static void get_token_redirections(token_t *token, char *line, int i, int start)
+static void get_token_redirections(token_t *token,
+    char *line, int i, int start)
 {
     if (line[start] == '>' && line[start + 1] == '>') {
         token->output_redirected = 1;
@@ -84,7 +87,8 @@ static void isolate_token(token_t *token)
     char *line = token->content;
 
     for (; line[i]; i++) {
-        count += (line[i] == '(' ? 1 : line[i] == ')' ? -1 : 0);
+        count += (line[i] == '(' ? 1 : 0);
+        count += (line[i] == ')' ? -1 : 0);
         if ((line[i] == '>' || line[i] == '<') && count == 0)
             break;
     }

@@ -17,7 +17,7 @@ static int count_occ(char *user_input, char c)
             in_quote = true;
             continue;
         }
-        else if (user_input[i] == '\'' && in_quote) {
+        if (user_input[i] == '\'' && in_quote) {
             in_quote = false;
             continue;
         }

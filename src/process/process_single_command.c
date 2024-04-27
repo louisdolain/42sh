@@ -47,7 +47,7 @@ void handle_quotes(char *command)
             in_quote = true;
             continue;
         }
-        else if (command[i] == '\'' && in_quote) {
+        if (command[i] == '\'' && in_quote) {
             in_quote = false;
             continue;
         }
@@ -64,8 +64,10 @@ void restore_quotes(char **parsed_input)
 {
     for (int i = 0; parsed_input && parsed_input[i]; i++) {
         for (int j = 0; parsed_input[i][j]; j++) {
-            parsed_input[i][j] = (parsed_input[i][j] == -1 ? ' ' : parsed_input[i][j]);
-            parsed_input[i][j] = (parsed_input[i][j] == -2 ? '\t' : parsed_input[i][j]);
+            parsed_input[i][j] = (parsed_input[i][j] == -1 ?
+                ' ' : parsed_input[i][j]);
+            parsed_input[i][j] = (parsed_input[i][j] == -2 ?
+                '\t' : parsed_input[i][j]);
         }
     }
 }

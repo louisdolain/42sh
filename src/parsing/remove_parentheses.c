@@ -18,7 +18,8 @@ static bool parantheses_open(char *content_ptr, int *i_open,
             *i_open = i;
             (*open)++;
             break;
-        } else if (content_ptr[i] != ' ' && content_ptr[i] != '\t')
+        }
+        if (content_ptr[i] != ' ' && content_ptr[i] != '\t')
             return false;
     }
     return true;

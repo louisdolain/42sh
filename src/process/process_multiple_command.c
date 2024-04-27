@@ -100,7 +100,6 @@ int recursive_compute(token_t *token, char ***env)
         open_token_double_output_redirections
         (token, &saved_out) == EXIT_FAILURE)
         return EXIT_FAILURE;
-    
     exit_status = process_recursive(token, env);
     close_token_redirections(token, saved_in, saved_out);
     return exit_status;

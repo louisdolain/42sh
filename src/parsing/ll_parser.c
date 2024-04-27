@@ -48,7 +48,8 @@ static char *get_separator(char **content_ptr, char **separators)
     char *sep = NULL;
 
     for (int i = 0; separators[i]; i++)
-        if (strncmp((*content_ptr), separators[i], strlen(separators[i])) == 0) {
+        if (strncmp((*content_ptr), separators[i],
+            strlen(separators[i])) == 0) {
             sep = strndup(*content_ptr, strlen(separators[i]));
             *content_ptr += strlen(separators[i]);
             return sep;
@@ -56,22 +57,8 @@ static char *get_separator(char **content_ptr, char **separators)
     return NULL;
 }
 
-token_t *ll_parser(token_t *head)
+static void create_sub_token(char *content_ptr, token_t *head, token_t *token)
 {
-    char *separators[] = {"|", "&&", ";", NULL};
-    token_t *token = calloc(1, sizeof(token_t));
-    char *content_ptr = head->content;
-    remove_outer_parentheses(content_ptr);
-    size_t len_token_left = len_to_next_token(content_ptr, separators);
-
-    token->content = strndup(content_ptr, len_token_left);
-    token->input_fd = 0;
-    token->output_fd = 1;
-    remove_outer_parentheses(token->content);
-    parse_token_redirections(token);
-    remove_outer_parentheses(token->content);
-    content_ptr += len_token_left;
-    head->separator = get_separator(&content_ptr, separators);
     if (*content_ptr) {
         append_ptr((void ***)&head->under_tokens, token, NULL);
         token = calloc(1, sizeof(token_t));
@@ -88,6 +75,26 @@ token_t *ll_parser(token_t *head)
         free(token->separator);
         free(token);
     }
+}
+
+token_t *ll_parser(token_t *head)
+{
+    char *separators[] = {"|", "&&", ";", NULL};
+    token_t *token = calloc(1, sizeof(token_t));
+    char *content_ptr = head->content;
+    size_t len_token_left = 0;
+
+    remove_outer_parentheses(content_ptr);
+    len_token_left = len_to_next_token(content_ptr, separators);
+    token->content = strndup(content_ptr, len_token_left);
+    token->input_fd = 0;
+    token->output_fd = 1;
+    remove_outer_parentheses(token->content);
+    parse_token_redirections(token);
+    remove_outer_parentheses(token->content);
+    content_ptr += len_token_left;
+    head->separator = get_separator(&content_ptr, separators);
+    create_sub_token(content_ptr, head, token);
     for (int i = 0; head->under_tokens && head->under_tokens[i]; i++)
         ll_parser(head->under_tokens[i]);
     return head;
