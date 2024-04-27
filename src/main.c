@@ -71,16 +71,14 @@ int mysh(char ***env)
 
 char **create_env(void)
 {
-    char **env = malloc(sizeof(char *) * 6);
+    char **env = calloc(6, sizeof(char *));
     char pwd[2048];
 
     getcwd(pwd, 2048);
-    env[5] = NULL;
     env[0] = concat_mem("PWD", "=", pwd);
     env[1] = concat_mem("OLDPWD", "=", pwd);
     env[2] = concat_mem("HOME", "=", "/home");
-    env[3] = concat_mem("PATH", "=",
-        "");
+    env[3] = concat_mem("PATH", "=", "");
     env[4] = concat_mem("TERM", "=", "xterm-256color");
     return env;
 }

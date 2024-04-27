@@ -9,53 +9,78 @@
 #include "process.h"
 #include "parsing.h"
 
-int process_recursive(token_t *token, char ***env)
+static int process_single_token(token_t *token, char ***env)
 {
+    char *temp = handle_backticks(token->content, env);
+
+    free(token->content);
+    token->content = temp;
+    return process_command(token->content, env);
+}
+
+static void process_token_right(token_t *token, int pipefd[2], char ***env)
+{
+    int saved_stdout = dup(STDOUT_FILENO);
+    int saved_stdin = dup(STDIN_FILENO);
     int exit_status = 0;
+
+    close(pipefd[1]);
+    dup2(pipefd[0], STDIN_FILENO);
+    exit_status = recursive_compute(token->under_tokens[1], env);
+    close(STDOUT_FILENO);
+    close(STDIN_FILENO);
+    dup2(saved_stdout, STDOUT_FILENO);
+    dup2(saved_stdin, STDIN_FILENO);
+    close(saved_stdin);
+    close(saved_stdout);
+    close(pipefd[0]);
+    exit(exit_status);
+}
+
+static int process_token_left(token_t *token, int pipefd[2],
+    char ***env, pid_t pid)
+{
+    int saved_stdout = dup(STDOUT_FILENO);
+    int saved_stdin = dup(STDIN_FILENO);
+    int exit_status = 0;
+
+    close(pipefd[0]);
+    dup2(pipefd[1], STDOUT_FILENO);
+    exit_status = recursive_compute(token->under_tokens[0], env);
+    close(STDOUT_FILENO);
+    close(STDIN_FILENO);
+    dup2(saved_stdout, STDOUT_FILENO);
+    dup2(saved_stdin, STDIN_FILENO);
+    close(saved_stdin);
+    close(saved_stdout);
+    close(pipefd[1]);
+    waitpid(pid, &exit_status, 0);
+    return WEXITSTATUS(exit_status);
+}
+
+static int process_redirected_token(token_t *token, char ***env)
+{
     int pipefd[2];
     pid_t pid;
 
-    if (!token->under_tokens) {
-        char *temp = handle_backticks(token->content, env);
+    pipe(pipefd);
+    pid = fork();
+    if (pid == 0)
+        process_token_right(token, pipefd, env);
+    else
+        return process_token_left(token, pipefd, env, pid);
+    return EXIT_SUCCESS;
+}
 
-        free(token->content);
-        token->content = temp;
-        exit_status = process_command(token->content, env);
-        return exit_status;
-    }
-    if (token->under_tokens[0]->output_redirected && token->under_tokens[0]->output_fd == 1) {
-        pipe(pipefd);
-        pid = fork();
-        if (pid == 0) {
-            int saved_stdout = dup(STDOUT_FILENO);
-            int saved_stdin = dup(STDIN_FILENO);
-            close(pipefd[1]);
-            dup2(pipefd[0], STDIN_FILENO);
-            exit_status = recursive_compute(token->under_tokens[1], env);
-            close(STDOUT_FILENO);
-            close(STDIN_FILENO);
-            dup2(saved_stdout, STDOUT_FILENO);
-            dup2(saved_stdin, STDIN_FILENO);
-            close(saved_stdin);
-            close(saved_stdout);
-            close(pipefd[0]);
-            exit(exit_status);
-        } else {
-            int saved_stdout = dup(STDOUT_FILENO);
-            int saved_stdin = dup(STDIN_FILENO);
-            close(pipefd[0]);
-            dup2(pipefd[1], STDOUT_FILENO);
-            exit_status = recursive_compute(token->under_tokens[0], env);
-            close(STDOUT_FILENO);
-            close(STDIN_FILENO);
-            dup2(saved_stdout, STDOUT_FILENO);
-            dup2(saved_stdin, STDIN_FILENO);
-            close(saved_stdin);
-            close(saved_stdout);
-            close(pipefd[1]);
-            waitpid(pid, &exit_status, 0);
-            return WEXITSTATUS(exit_status);
-        }
+int process_recursive(token_t *token, char ***env)
+{
+    int exit_status = 0;
+
+    if (!token->under_tokens)
+        return process_single_token(token, env);
+    else if (token->under_tokens[0]->output_redirected &&
+        token->under_tokens[0]->output_fd == 1) {
+        return process_redirected_token(token, env);
     } else {
         exit_status = recursive_compute(token->under_tokens[0], env);
         exit_status = recursive_compute(token->under_tokens[1], env);

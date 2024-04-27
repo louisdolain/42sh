@@ -56,88 +56,6 @@ static char *get_separator(char **content_ptr, char **separators)
     return NULL;
 }
 
-char *tokenize(char *str, int start, int end)
-{
-    char *newstr = calloc(end - start + 2, sizeof(char));
-    int index_str = 0;
-
-    for (int i = start; i <= end; i++) {
-        newstr[index_str] = str[i];
-        str[i] = ' ';
-        index_str++;
-    }
-    return newstr;
-}
-
-static bool separator_outer_parentheses(char *line)
-{
-    int count = 0;
-
-    for (int i = 0; line[i]; i++) {
-        count += (line[i] == '(' ? 1 : line[i] == ')' ? -1 : 0);
-        if ((line[i] == '|' || line[i] == ';' || line[i] == '&') &&
-            count == 0) {
-            return true;
-        }
-    }
-    return false;
-}
-
-static bool redirection_outer_parentheses(char *line)
-{
-    int count = 0;
-
-    for (int i = 0; line[i]; i++) {
-        count += (line[i] == '(' ? 1 : line[i] == ')' ? -1 : 0);
-        if ((line[i] == '<' || line[i] == '>') &&
-            count == 0) {
-            return true;
-        }
-    }
-    return false;
-}
-
-void parse_token_redirections(token_t *token)
-{
-    if (separator_outer_parentheses(token->content))
-        return;
-    while (redirection_outer_parentheses(token->content)) {
-        int count = 0;
-        int i = 0;
-        int start = 0;
-        char *line = token->content;
-    
-        for (; line[i]; i++) {
-            count += (line[i] == '(' ? 1 : line[i] == ')' ? -1 : 0);
-            if ((line[i] == '>' || line[i] == '<') && count == 0)
-                break;
-        }
-        if (line[i] == '\0')
-            continue;
-        start = i;
-        if (line[i + 1] == '>')
-            i++;
-        for (i += 1; line[i] && line[i] != '(' && line[i] != '|' && line[i] != '&' && line[i] != ';' && line[i] != '>' && line[i] != '<'; i++);
-        if (line[start] == '>' && line[start + 1] == '>') {
-            token->output_redirected = 1;
-            token->output_fd = OUTPUT_DOUBLE_REDIRECTION;
-            token->output_file = cleanstr(tokenize(line, start + 2, i - 1));
-            line[start] = ' ';
-            line[start + 1] = ' ';
-        } else if (line[start] == '>') {
-            token->output_redirected = 1;
-            token->output_fd = OUTPUT_REDIRECTION;
-            token->output_file = cleanstr(tokenize(line, start + 1, i - 1));
-            line[start] = ' ';
-        } else if (line[start] == '<') {
-            token->input_redirected = 1;
-            token->input_fd = INPUT_REDIRECTION;
-            token->input_file = cleanstr(tokenize(line, start + 1, i - 1));
-            line[start] = ' ';
-        }
-    }
-}
-
 token_t *ll_parser(token_t *head)
 {
     char *separators[] = {"|", "&&", ";", NULL};
@@ -185,8 +103,8 @@ int redirect_tokens(token_t *token)
     }
     if (token->separator && my_strcmp(token->separator, "&&") == 0) {
         if (token->under_tokens) {
-            token->under_tokens[0]->output_redirected = 1;
-            token->under_tokens[1]->input_redirected = 1;
+            token->under_tokens[0]->output_redirected = 0;
+            token->under_tokens[1]->input_redirected = 0;
         }
     }
     for (int i = 0; token->under_tokens && token->under_tokens[i]; i++)

@@ -26,5 +26,6 @@ char *cleanstr(char *str)
     }
     new_str = malloc(sizeof(char) * (end - start + 2));
     my_strncpy(new_str, str + start, end - start + 1);
+    free(str);
     return new_str;
 }

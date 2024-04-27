@@ -5,6 +5,13 @@
 ** destroy
 */
 
+/*
+** EPITECH PROJECT, 2024
+** 42sh
+** File description:
+** destroy
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "parsing.h"
