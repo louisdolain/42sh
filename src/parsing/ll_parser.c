@@ -83,19 +83,29 @@ static bool separator_outer_parentheses(char *line)
     return false;
 }
 
+static bool redirection_outer_parentheses(char *line)
+{
+    int count = 0;
+
+    for (int i = 0; line[i]; i++) {
+        count += (line[i] == '(' ? 1 : line[i] == ')' ? -1 : 0);
+        if ((line[i] == '<' || line[i] == '>') &&
+            count == 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void parse_token_redirections(token_t *token)
 {
-    //(ls -l | cat -e) > fichier < Makefile
-    if (separator_outer_parentheses(token->content)) {
+    if (separator_outer_parentheses(token->content))
         return;
-    }
-    while (strchr(token->content, '<') != NULL || strchr(token->content, '>') != NULL) {
+    while (redirection_outer_parentheses(token->content)) {
         int count = 0;
         int i = 0;
         int start = 0;
         char *line = token->content;
-        char *temp = NULL;
-        char *file = NULL;
     
         for (; line[i]; i++) {
             count += (line[i] == '(' ? 1 : line[i] == ')' ? -1 : 0);
@@ -105,17 +115,26 @@ void parse_token_redirections(token_t *token)
         if (line[i] == '\0')
             continue;
         start = i;
-        for (i += 1; line[i] && line[i] != '(' && line[i] != '|' && line[i] != ';' && line[i] != '>' && line[i] != '<'; i++);
-        if (line[start] == '>') {
+        if (line[i + 1] == '>')
+            i++;
+        for (i += 1; line[i] && line[i] != '(' && line[i] != '|' && line[i] != '&' && line[i] != ';' && line[i] != '>' && line[i] != '<'; i++);
+        if (line[start] == '>' && line[start + 1] == '>') {
+            token->output_redirected = 1;
+            token->output_fd = OUTPUT_DOUBLE_REDIRECTION;
+            token->output_file = cleanstr(tokenize(line, start + 2, i - 1));
+            line[start] = ' ';
+            line[start + 1] = ' ';
+        } else if (line[start] == '>') {
             token->output_redirected = 1;
             token->output_fd = OUTPUT_REDIRECTION;
             token->output_file = cleanstr(tokenize(line, start + 1, i - 1));
+            line[start] = ' ';
         } else if (line[start] == '<') {
             token->input_redirected = 1;
             token->input_fd = INPUT_REDIRECTION;
             token->input_file = cleanstr(tokenize(line, start + 1, i - 1));
+            line[start] = ' ';
         }
-        line[start] = ' ';
     }
 }
 
@@ -130,9 +149,9 @@ token_t *ll_parser(token_t *head)
     token->content = strndup(content_ptr, len_token_left);
     token->input_fd = 0;
     token->output_fd = 1;
+    remove_outer_parentheses(token->content);
     parse_token_redirections(token);
     remove_outer_parentheses(token->content);
-
     content_ptr += len_token_left;
     head->separator = get_separator(&content_ptr, separators);
     if (*content_ptr) {
@@ -141,6 +160,7 @@ token_t *ll_parser(token_t *head)
         token->input_fd = 0;
         token->output_fd = 1;
         token->content = strdup(content_ptr);
+        remove_outer_parentheses(token->content);
         parse_token_redirections(token);
         remove_outer_parentheses(token->content);
         append_ptr((void ***)&head->under_tokens, token, NULL);
@@ -150,15 +170,20 @@ token_t *ll_parser(token_t *head)
         free(token->separator);
         free(token);
     }
-    for (int i = 0; head->under_tokens && head->under_tokens[i]; i++) {
+    for (int i = 0; head->under_tokens && head->under_tokens[i]; i++)
         ll_parser(head->under_tokens[i]);
-    }
     return head;
 }
 
 int redirect_tokens(token_t *token)
 {
     if (token->separator && my_strcmp(token->separator, "|") == 0) {
+        if (token->under_tokens) {
+            token->under_tokens[0]->output_redirected = 1;
+            token->under_tokens[1]->input_redirected = 1;
+        }
+    }
+    if (token->separator && my_strcmp(token->separator, "&&") == 0) {
         if (token->under_tokens) {
             token->under_tokens[0]->output_redirected = 1;
             token->under_tokens[1]->input_redirected = 1;

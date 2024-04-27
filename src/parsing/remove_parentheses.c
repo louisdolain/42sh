@@ -10,28 +10,6 @@
 #include <string.h>
 #include "my.h"
 
-static bool check_closing(char *content_ptr, int *i_open,
-    int *i_close)
-{
-    for (int i = *i_open + 1; content_ptr[i]; i++) {
-        if (i == *i_close)
-            break;
-        if (content_ptr[i] == '(')
-            break;
-        if (content_ptr[i] == ')')
-            return false;
-    }
-    for (int i = *i_close - 1; i >= 0; i--) {
-        if (i == *i_open)
-            break;
-        if (content_ptr[i] == ')')
-            break;
-        if (content_ptr[i] == '(')
-            return false;
-    }
-    return true;
-}
-
 static bool parantheses_open(char *content_ptr, int *i_open,
     int *open)
 {
@@ -46,36 +24,39 @@ static bool parantheses_open(char *content_ptr, int *i_open,
     return true;
 }
 
-static bool parantheses_close(char *content_ptr, int *i_close,
-    int *close)
+int find_closing(char *content_ptr, int i_open)
 {
-    for (int i = strlen(content_ptr) - 1; i >= 0; i--) {
-        if (content_ptr[i] == ')') {
-            *i_close = i;
-            (*close)++;
+    int i = i_open;
+    int close = 0;
+
+    while (content_ptr[i]) {
+        if (content_ptr[i] == '(')
+            close++;
+        if (content_ptr[i] == ')')
+            close--;
+        if (close == 0)
             break;
-        } else if (content_ptr[i] != ' ' && content_ptr[i] != '\t')
-            return false;
+        i++;
     }
-    return true;
+    return i;
 }
 
 static bool find_outer_parantheses(char *content_ptr, int *i_open,
     int *i_close)
 {
     int open = 0;
-    int close = 0;
 
     if (parantheses_open(content_ptr, i_open, &open) == false) {
         return false;
     }
-    if (parantheses_close(content_ptr, i_close, &close) == false) {
+    *i_close = find_closing(content_ptr, *i_open);
+    if (content_ptr[*i_close] == '\0')
         return false;
+    for (int i = *i_close + 1; content_ptr[i]; i++) {
+        if (content_ptr[i] != ' ' && content_ptr[i] != '\t')
+            return false;
     }
-    if (check_closing(content_ptr, i_open, i_close) == false) {
-        return false;
-    }
-    return open == 1 && close == 1;
+    return true;
 }
 
 void remove_outer_parentheses(char *content_ptr)
