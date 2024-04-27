@@ -81,13 +81,49 @@ static int process_child(char **parsed_input, char **paths, char ***env)
     exit(1);
 }
 
+void handle_quotes(char *command)
+{
+    bool in_quote = false;
+
+    for (int i = 0; command[i]; i++) {
+        if (command[i] == '\'' && !in_quote) {
+            in_quote = true;
+            continue;
+        }
+        else if (command[i] == '\'' && in_quote) {
+            in_quote = false;
+            continue;
+        }
+        command[i] = (in_quote && command[i] == ' ' ? -1 : command[i]);
+        command[i] = (in_quote && command[i] == '\t' ? -2 : command[i]);
+    }
+    for (int i = 0; command[i]; i++) {
+        if (command[i] == '\'')
+            command[i] = ' ';
+    }
+}
+
+void restore_quotes(char **parsed_input)
+{
+    for (int i = 0; parsed_input && parsed_input[i]; i++) {
+        for (int j = 0; parsed_input[i][j]; j++) {
+            parsed_input[i][j] = (parsed_input[i][j] == -1 ? ' ' : parsed_input[i][j]);
+            parsed_input[i][j] = (parsed_input[i][j] == -2 ? '\t' : parsed_input[i][j]);
+        }
+    }
+}
+
 static int process_command(char *command, char ***env)
 {
     char **bin_path_list = get_bin_path_list(*env);
-    char **parsed_input = my_str_to_all_array(command, " \t");
-    char **paths = get_fct_paths(bin_path_list, parsed_input[0]);
+    char **parsed_input = NULL;
+    char **paths = NULL;
     __pid_t pid;
 
+    handle_quotes(command);
+    parsed_input = my_str_to_all_array(command, " \t");
+    restore_quotes(parsed_input);
+    paths = get_fct_paths(bin_path_list, parsed_input[0]);
     free_str_array(bin_path_list);
     pid = fork();
     if (pid == 0) {
@@ -104,10 +140,10 @@ int process_recursive(token_t *token, char ***env)
     pid_t pid;
 
     if (!token->under_tokens) {
-        exit_status = process_command(token->content, env);
+        exit_status = process_command(handle_backticks(token->content, env), env);
         return exit_status;
     }
-    if (token->under_tokens[0]->output_redirected) {
+    if (token->under_tokens[0]->output_redirected && token->under_tokens[0]->output_fd == 1) {
         pipe(pipefd);
         pid = fork();
         if (pid == 0) {
@@ -115,7 +151,7 @@ int process_recursive(token_t *token, char ***env)
             int saved_stdin = dup(STDIN_FILENO);
             close(pipefd[1]);
             dup2(pipefd[0], STDIN_FILENO);
-            exit_status = recursive_compute(token->under_tokens[1], env, 0);
+            exit_status = recursive_compute(token->under_tokens[1], env);
             close(STDOUT_FILENO);
             close(STDIN_FILENO);
             dup2(saved_stdout, STDOUT_FILENO);
@@ -129,7 +165,7 @@ int process_recursive(token_t *token, char ***env)
             int saved_stdin = dup(STDIN_FILENO);
             close(pipefd[0]);
             dup2(pipefd[1], STDOUT_FILENO);
-            exit_status = recursive_compute(token->under_tokens[0], env, 1);
+            exit_status = recursive_compute(token->under_tokens[0], env);
             close(STDOUT_FILENO);
             close(STDIN_FILENO);
             dup2(saved_stdout, STDOUT_FILENO);
@@ -141,14 +177,14 @@ int process_recursive(token_t *token, char ***env)
             return WEXITSTATUS(exit_status);
         }
     } else {
-        exit_status = recursive_compute(token->under_tokens[0], env, -1);
-        exit_status = recursive_compute(token->under_tokens[1], env, -1);
+        exit_status = recursive_compute(token->under_tokens[0], env);
+        exit_status = recursive_compute(token->under_tokens[1], env);
         return exit_status;
     }
     return exit_status;
 }
 
-int recursive_compute(token_t *token, char ***env, int blocked)
+int recursive_compute(token_t *token, char ***env)
 {
     int exit_status;
     int saved_out;
@@ -156,11 +192,22 @@ int recursive_compute(token_t *token, char ***env, int blocked)
 
     if (token->output_fd == OUTPUT_REDIRECTION) {
         token->output_fd = open(token->output_file, O_WRONLY | O_TRUNC | O_CREAT, 0644);
+        if (token->output_fd == -1)
+            perror("");
+        saved_out = dup(STDOUT_FILENO);
+        dup2(token->output_fd, STDOUT_FILENO);
+    }
+    if (token->output_fd == OUTPUT_DOUBLE_REDIRECTION) {
+        token->output_fd = open(token->output_file, O_WRONLY | O_APPEND | O_CREAT, 0644);
+        if (token->output_fd == -1)
+            perror("");
         saved_out = dup(STDOUT_FILENO);
         dup2(token->output_fd, STDOUT_FILENO);
     }
     if (token->input_fd == INPUT_REDIRECTION) {
         token->input_fd = open(token->input_file, O_RDONLY);
+        if (token->input_fd == -1)
+            perror("");
         saved_in = dup(STDIN_FILENO);
         dup2(token->input_fd, STDIN_FILENO);
     }
@@ -180,18 +227,20 @@ int recursive_compute(token_t *token, char ***env, int blocked)
 
 int process_multiple_command(char *user_input, char ***env)
 {
-    int exit_status = 0;
     token_t *token = calloc(1, sizeof(token_t));
-
     token->input_fd = 0;
     token->output_fd = 1;
     token->content = strdup(user_input);
-    parse_token_redirections(token);
-    remove_outer_parentheses(token->content);
     if (!token)
         return 1;
+    if (!verifiy_parantheses(user_input)) {
+        free(token);
+        return 1;
+    }
+    remove_outer_parentheses(token->content);
+    parse_token_redirections(token);
+    remove_outer_parentheses(token->content);
     ll_parser(token);
     redirect_tokens(token);
-    exit_status = recursive_compute(token, env, -1);
-    return exit_status;
+    return recursive_compute(token, env);
 }
