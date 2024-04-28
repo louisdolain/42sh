@@ -18,7 +18,7 @@ SRC =	$(SRC_FOLDER)tools/tools.c \
 		$(SRC_FOLDER)process/arrow_redirections.c \
 		$(SRC_FOLDER)bulletins/cd.c \
 		$(SRC_FOLDER)bulletins/env.c \
-		$(SRC_FOLDER)alias/ls_function.c \
+		$(SRC_FOLDER)colors/ls_function.c \
 		$(SRC_FOLDER)error/error_handle.c \
 		$(SRC_FOLDER)bulletins/env_management.c \
 		$(SRC_FOLDER)error/cd_errors.c \
