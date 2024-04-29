@@ -58,6 +58,7 @@ int process_parent(__pid_t pid, char **parsed_input,
     process_cd(parsed_input, env, &res);
     process_env(parsed_input, env, &res);
     process_segfault(status, &res);
+    process_alias();
     free_process(parsed_input, paths);
     return res;
 }
@@ -68,7 +69,8 @@ static int process_child(char **parsed_input, char **paths, char ***env)
         my_strcmp(parsed_input[0], "cd") == 0 ||
         my_strcmp(parsed_input[0], "env") == 0 ||
         my_strcmp(parsed_input[0], "setenv") == 0 ||
-        my_strcmp(parsed_input[0], "unsetenv") == 0)
+        my_strcmp(parsed_input[0], "unsetenv") == 0 ||
+        my_strcmp(parsed_input[0], "alias") == 0)
         exit(0);
     execve(parsed_input[0], parsed_input, *env);
     execve_error(parsed_input[0]);
