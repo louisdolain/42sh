@@ -28,6 +28,7 @@ SRC =	$(SRC_FOLDER)tools/tools.c \
 		$(SRC_FOLDER)parsing/remove_parentheses.c \
 		$(SRC_FOLDER)parsing/ll_parser.c \
 		$(SRC_FOLDER)parsing/destroy.c \
+		$(SRC_FOLDER)process/process_operators.c \
 		$(SRC_FOLDER)parsing/parse_token_redirections.c \
 		$(SRC_FOLDER)backticks/backticks.c \
 		$(wildcard src/history/*.c)

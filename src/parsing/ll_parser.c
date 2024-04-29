@@ -79,7 +79,7 @@ static void create_sub_token(char *content_ptr, token_t *head, token_t *token)
 
 token_t *ll_parser(token_t *head)
 {
-    char *separators[] = {"|", "&&", ";", NULL};
+    char *separators[] = {"||", "|", "&&", ";", NULL};
     token_t *token = calloc(1, sizeof(token_t));
     char *content_ptr = head->content;
     size_t len_token_left = 0;
@@ -106,12 +106,6 @@ int redirect_tokens(token_t *token)
         if (token->under_tokens) {
             token->under_tokens[0]->output_redirected = 1;
             token->under_tokens[1]->input_redirected = 1;
-        }
-    }
-    if (token->separator && my_strcmp(token->separator, "&&") == 0) {
-        if (token->under_tokens) {
-            token->under_tokens[0]->output_redirected = 0;
-            token->under_tokens[1]->input_redirected = 0;
         }
     }
     for (int i = 0; token->under_tokens && token->under_tokens[i]; i++)
