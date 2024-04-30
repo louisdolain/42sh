@@ -6,6 +6,7 @@
 */
 
 #include "my.h"
+#include "globbing.h"
 
 size_t nbr_wdr(const char *str)
 {
@@ -27,7 +28,7 @@ size_t nbr_wdr(const char *str)
     return count;
 }
 
-int exec_vp(char *cmd, char **arg)
+static int execute_command(char *cmd, char **arg)
 {
     pid_t pid = fork();
 
@@ -44,6 +45,12 @@ int exec_vp(char *cmd, char **arg)
     return 0;
 }
 
+int contains_globbing_pattern(const char *str)
+{
+    return strchr(str, '*') != NULL || strchr(str, '?') != NULL
+        || strchr(str, '[') != NULL;
+}
+
 int handle_globbing(char *cmd, char *line)
 {
     glob_t globbuf;
@@ -51,16 +58,17 @@ int handle_globbing(char *cmd, char *line)
     char **arg = NULL;
     int i = 0;
 
-    arg = str_to_word_array(' ', line);
+    arg = my_str_to_all_array(cmd, " ");
     globbuf.gl_offs = nbr_bfr_glob;
     while (arg[i]) {
         glob(arg[i], GLOB_DOOFFS | (i == 0 ? 0 : GLOB_APPEND), NULL, &globbuf);
         i++;
     }
-    globbuf.gl_pathv[0] = cmd;
     for (int j = 0; j < i; j++) {
+        if (contains_globbing_pattern(arg[j]))
+            continue;
         globbuf.gl_pathv[j] = arg[j];
     }
-    exec_vp(cmd, globbuf.gl_pathv);
+    execute_command(line, globbuf.gl_pathv);
     return 0;
 }
