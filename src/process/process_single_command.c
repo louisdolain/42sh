@@ -82,6 +82,10 @@ int process_command(char *command, char ***env)
     handle_quotes(command);
     parsed_input = my_str_to_all_array(command, " \t");
     restore_quotes(parsed_input);
+    if (contains_globbing_pattern(command)) {
+        handle_globbing(command, parsed_input[0]);
+        return 0;
+    }
     paths = get_fct_paths(bin_path_list, parsed_input[0]);
     free_str_array(bin_path_list);
     pid = fork();
