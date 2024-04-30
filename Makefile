@@ -24,12 +24,13 @@ SRC =	$(SRC_FOLDER)tools/tools.c \
 		$(SRC_FOLDER)error/cd_errors.c \
 		$(SRC_FOLDER)bulletins/exit.c \
 		$(SRC_FOLDER)error/execve_errors.c \
+		$(SRC_FOLDER)error/parantheses_error.c \
 		$(SRC_FOLDER)parsing/remove_parentheses.c \
 		$(SRC_FOLDER)parsing/ll_parser.c \
 		$(SRC_FOLDER)parsing/destroy.c \
 		$(SRC_FOLDER)parsing/parse_token_redirections.c \
 		$(SRC_FOLDER)backticks/backticks.c \
-		$(SRC_FOLDER)error/parantheses_error.c
+		$(wildcard src/history/*.c)
 
 SRC_BASIC =	$(LIB_BASIC_FOLDER)my_printf.c \
 		$(LIB_BASIC_FOLDER)my_printf2.c \
@@ -49,7 +50,8 @@ SRC_BASIC =	$(LIB_BASIC_FOLDER)my_printf.c \
 		$(LIB_BASIC_FOLDER)my_strdup_array.c \
 		$(LIB_BASIC_FOLDER)append.c \
 		$(LIB_BASIC_FOLDER)cleanstr.c \
-		$(LIB_BASIC_FOLDER)open_file.c
+		$(LIB_BASIC_FOLDER)open_file.c	\
+		$(LIB_BASIC_FOLDER)number.c
 
 SRC_TEST = $(SRC_FOLDER)parsing/*.c \
 		$(TEST_FOLDER)parsing/parser.c \

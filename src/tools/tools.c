@@ -28,9 +28,9 @@ void free_mysh(char *user_input, char ***env)
     free_str_array(*env);
 }
 
-void free_process(char **parsed_input, char **paths)
+void free_process(char ***parsed_input, char **paths)
 {
-    free_str_array(parsed_input);
+    free_str_array((*parsed_input));
     free_str_array(paths);
 }
 

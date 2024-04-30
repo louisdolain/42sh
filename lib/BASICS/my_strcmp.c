@@ -7,24 +7,18 @@
 
 #include "basics.h"
 
-int my_strcmp(char const *s1, char const *s2)
+int my_strcmp(const char *s1, const char *s2)
 {
-    int result = 0;
-    int lenS1 = my_strlen(s1);
+    int i = 0;
 
-    for (int i = 0; i <= lenS1; i++) {
-        if (s1[i] == s2[i]) {
-            result = 0;
-        }
-        if (s1[i] < s2[i]) {
-            return (s1[i] - s2[i]);
-        }
-        if (s1[i] > s2[i]) {
-            return (s1[i] - s2[i]);
-        }
+    if (s1 == NULL || s2 == NULL)
+        return 84;
+    while (s1[i] == s2[i]) {
+        if (s1[i] == '\0')
+            return 0;
+        i++;
     }
-    result = 0;
-    return result;
+    return s1[i] - s2[i];
 }
 
 int my_strncmp(char const *s1, char const *s2, int n)
