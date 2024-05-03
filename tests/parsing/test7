@@ -1,0 +1,30 @@
+((ls -l ; cat < Makefile; echo Bonjour) | cat -e | cat -e; cat < Makefile) | grep lib ; cat Makefile in: -1, out: -1
+
+-- (ls -l ; cat < Makefile; echo Bonjour) | cat -e | cat -e; cat < Makefile   in: 0, out: 1
+
+----  ls -l ; cat < Makefile; echo Bonjour   in: 0, out: 1
+
+------  ls -l  in: 0, out: 1
+
+------ cat < Makefile; echo Bonjour   in: 0, out: 1
+
+-------- cat            in: -2, out: 1
+
+-------- echo Bonjour   in: 0, out: 1
+
+---- cat -e | cat -e; cat < Makefile   in: 0, out: 1
+
+------ cat -e  in: 0, out: 1
+
+------ cat -e; cat < Makefile   in: 0, out: 1
+
+-------- cat -e in: 0, out: 1
+
+-------- cat              in: -2, out: 1
+
+-- grep lib ; cat Makefile in: 0, out: 1
+
+---- grep lib  in: 0, out: 1
+
+---- cat Makefile in: 0, out: 1
+
