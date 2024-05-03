@@ -8,6 +8,13 @@
 #include "my.h"
 #include "process.h"
 
+static void clean_exiting_process(int status, int res,
+    char ***parsed_input, char **paths)
+{
+    process_segfault(status, &res);
+    free_process(parsed_input, paths);
+}
+
 int process_parent(pid_t pid, char ***parsed_input,
     char **paths, char ***env)
 {
@@ -19,7 +26,8 @@ int process_parent(pid_t pid, char ***parsed_input,
     waitpid(pid, &status, 0);
     res = WEXITSTATUS(status);
     for (int i = 0; BULLETIN_ARRAY[i].bulletin; i++) {
-    if (((*parsed_input)[0][0] == '!' && strncmp(BULLETIN_ARRAY[i].bulletin, "!", 1) == 0) ||
+    if (((*parsed_input)[0][0] == '!' &&
+        strncmp(BULLETIN_ARRAY[i].bulletin, "!", 1) == 0) ||
         strcmp(BULLETIN_ARRAY[i].bulletin, (*parsed_input)[0]) == 0) {
         BULLETIN_ARRAY[i].function(parsed_input, env, &res, &list);
         break;
@@ -28,16 +36,15 @@ int process_parent(pid_t pid, char ***parsed_input,
     history_add(&list, array_to_str((*parsed_input)));
     if (strcmp((*parsed_input)[0], temp) > 0)
         process_multiple_command(array_to_str((*parsed_input)), env);
-    free(temp);
-    process_segfault(status, &res);
-    free_process(parsed_input, paths);
+    clean_exiting_process(status, res, parsed_input, paths);
     return res;
 }
 
 int process_child(char ***parsed_input, char **paths, char ***env)
 {
     for (int i = 0; BULLETIN_ARRAY[i].bulletin; i++)
-        if (((*parsed_input)[0][0] == '!' && strncmp(BULLETIN_ARRAY[i].bulletin, "!", 1) == 0) ||
+        if (((*parsed_input)[0][0] == '!' &&
+            strncmp(BULLETIN_ARRAY[i].bulletin, "!", 1) == 0) ||
         strcmp(BULLETIN_ARRAY[i].bulletin, (*parsed_input)[0]) == 0)
             exit(0);
     execve((*parsed_input)[0], (*parsed_input), *env);

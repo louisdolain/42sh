@@ -12,13 +12,6 @@
 #include "bulletin.h"
 #include "my.h"
 
-
-void print_array(char **array, char *str){
-    printf("%s \n", str);
-    for (int i = 0; array[i] != 0; i++)
-        printf("%s\n", array[i]);
-}
-
 void process_history(char ***parsed_input, char ***, int *, history_t **list)
 {
     if ((*parsed_input)[0][0] == '!')
