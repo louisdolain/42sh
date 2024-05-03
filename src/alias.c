@@ -5,9 +5,10 @@
 ** alias
 */
 
-#include "../include/my.h"
+#include "my.h"
+#include "alias.h"
 
-int process_alias(char **parsed_input)
+int process_alias(char **parsed_input, alias_t *alias_list)
 {
     alias_t new_alias = {parsed_input[1], "\0"};
 

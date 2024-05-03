@@ -9,6 +9,7 @@
 
 #include <string.h>
 #include <fcntl.h>
+#include <alias.h>
 
 typedef struct bulletins_s {
     char *bulletin;
@@ -18,6 +19,7 @@ typedef struct bulletins_s {
 void process_cd(char **parsed_input, char ***env, int *res);
 void process_env(char **parsed_input, char ***env, int *res);
 void process_segfault(int status, int *res);
+int process_alias(char **parsed_input, alias_t *alias_list);
 
 static const bulletins_t BULLETIN_ARRAY[] = {
     {
