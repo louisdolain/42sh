@@ -47,7 +47,7 @@ int process_setenv(char **parsed_input, char ***env)
     return 0;
 }
 
-int process_parent(__pid_t pid, char **parsed_input,
+int process_parent(pid_t pid, char **parsed_input,
     char **paths, char ***env)
 {
     int status;
@@ -58,7 +58,7 @@ int process_parent(__pid_t pid, char **parsed_input,
     process_cd(parsed_input, env, &res);
     process_env(parsed_input, env, &res);
     process_segfault(status, &res);
-    process_alias();
+    process_alias(parsed_input);
     free_process(parsed_input, paths);
     return res;
 }
@@ -86,7 +86,7 @@ static int process_command(command_t *command, char ***env)
     char **bin_path_list = get_bin_path_list(*env);
     char **parsed_input = my_str_to_all_array(command->command, " \t");
     char **paths = get_fct_paths(bin_path_list, parsed_input[0]);
-    __pid_t pid;
+    pid_t pid;
 
     free_str_array(bin_path_list);
     pid = fork();

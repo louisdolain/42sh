@@ -31,6 +31,11 @@ typedef struct command_s {
     int pipe_out[2];
 } command_t;
 
+typedef struct alias_s {
+    char *alias;
+    char *command;
+}alias_t;
+
 typedef struct redirection_s {
     char *d_output_file;
     char *d_input_file;
@@ -46,7 +51,7 @@ char **get_fct_paths(char **bin_path_list, char *function_name);
 char *my_getenv(char **env, char *to_find);
 
 // process functions
-int process_parent(__pid_t pid, char **parsed_input,
+int process_parent(pid_t pid, char **parsed_input,
     char **paths, char ***env);
 int process_setenv(char **parsed_input, char ***env);
 int process_multiple_command(char *command_line, char ***env);
@@ -76,4 +81,8 @@ int my_exit(char *userinput, int *exit);
 command_t **get_command_array(char *user_input);
 void destroy_command_array(command_t **command_array);
 int parse_redirection(command_t *command, redirection_t *red);
+
+//alias
+int process_alias(char **parsed_input);
+
 #endif

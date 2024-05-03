@@ -23,7 +23,8 @@ SRC =	$(SRC_FOLDER)tools.c \
 		$(SRC_FOLDER)bulletins/exit.c \
 		$(SRC_FOLDER)error/execve_errors.c \
 		$(SRC_FOLDER)parsing/parser.c \
-		$(SRC_FOLDER)parsing/parse_red.c
+		$(SRC_FOLDER)parsing/parse_red.c \
+		$(SRC_FOLDER)alias.c
 
 SRC_BASIC =	$(LIB_BASIC_FOLDER)my_printf.c \
 		$(LIB_BASIC_FOLDER)my_printf2.c \
