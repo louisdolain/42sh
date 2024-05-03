@@ -61,7 +61,7 @@ void process_basic_cd(char ***parsed_input, char ***env, int *res)
     }
 }
 
-void process_cd(char ***parsed_input, char ***env, int *res, history_t **list)
+void process_cd(char ***parsed_input, char ***env, int *res, history_t **)
 {
     int len = my_strlen_array((*parsed_input));
 

@@ -19,7 +19,7 @@ void print_array(char **array, char *str){
         printf("%s\n", array[i]);
 }
 
-void process_history(char ***parsed_input, char ***env, int *res, history_t **list)
+void process_history(char ***parsed_input, char ***, int *, history_t **list)
 {
     if ((*parsed_input)[0][0] == '!')
         return exclamation_mark(list, (*parsed_input)[0], parsed_input);

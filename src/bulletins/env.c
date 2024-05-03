@@ -67,7 +67,7 @@ static void process_unsetenv(char ***parsed_input, char ***env)
     }
 }
 
-void process_env(char ***parsed_input, char ***env, int *res, history_t **list)
+void process_env(char ***parsed_input, char ***env, int *res, history_t **)
 {
     if (my_strcmp((*parsed_input)[0], "env") == 0) {
         *res = 0;
