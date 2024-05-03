@@ -9,7 +9,7 @@
 #include <criterion/internal/assert.h>
 #include <criterion/internal/test.h>
 #include <string.h>
-#include "my.h"
+#include "parsing.h"
 
 void display_tokens(token_t *tokens, int indent, char *string) {
     char temp[100000];
