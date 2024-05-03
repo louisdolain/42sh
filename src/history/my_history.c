@@ -5,7 +5,7 @@
 ** test
 */
 
-#include "my.h"
+#include "history.h"
 #include "bulletin.h"
 #include <stdio.h>
 #include <stdlib.h>

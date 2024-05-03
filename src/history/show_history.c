@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-#include "my.h"
+#include "history.h"
 
 void display_history(history_t *list, char *flag)
 {

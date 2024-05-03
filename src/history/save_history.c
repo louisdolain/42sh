@@ -5,7 +5,7 @@
 ** save_history
 */
 
-#include "my.h"
+#include "history.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>

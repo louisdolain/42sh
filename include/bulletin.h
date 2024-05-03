@@ -9,7 +9,8 @@
 
 #include <string.h>
 #include <fcntl.h>
-#include "my.h"
+#include "history.h"
+#include "basics.h"
 
 typedef struct bulletins_s {
     char *bulletin;
