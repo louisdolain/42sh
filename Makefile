@@ -29,7 +29,13 @@ SRC =	$(SRC_FOLDER)tools/tools.c \
 		$(SRC_FOLDER)parsing/destroy.c \
 		$(SRC_FOLDER)parsing/parse_token_redirections.c \
 		$(SRC_FOLDER)backticks/backticks.c \
-		$(SRC_FOLDER)error/parantheses_error.c
+		$(SRC_FOLDER)error/parantheses_error.c \
+		$(SRC_FOLDER)line_navigation/handle_user_input.c \
+		$(SRC_FOLDER)line_navigation/handle_keys.c \
+		$(SRC_FOLDER)line_navigation/print.c \
+                $(SRC_FOLDER)line_navigation/left_right_arrows.c \
+                $(SRC_FOLDER)line_navigation/handle_arrow_keys.c \
+                $(SRC_FOLDER)line_navigation/up_down_arrows.c \
 
 SRC_BASIC =	$(LIB_BASIC_FOLDER)my_printf.c \
 		$(LIB_BASIC_FOLDER)my_printf2.c \
