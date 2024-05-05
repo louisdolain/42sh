@@ -7,48 +7,38 @@
 
 #include "my.h"
 #include "process.h"
+#include "navigation.h"
+#include <termios.h>
 
-int input_not_empty(char *user_input)
+int get_user_input(char **user_input, history_t *hist)
 {
-    if (my_strlen(user_input) < 2)
-        return 0;
-    for (int i = 0; user_input[i] != '\0'; i++) {
-        if (user_input[i] != '\n' && user_input[i] != ' ' &&
-            user_input[i] != '\t')
-            return 1;
-    }
-    return 0;
-}
+    struct termios old_rules;
+    struct termios new_rules;
+    char *input = calloc(MAX_INPUT_LENGTH, sizeof(char));
+    int cursor_pos = 0;
+    int input_length = 0;
 
-int get_user_input(char **user_input, int exit)
-{
-    size_t byteread = 0;
-    char pwd[2048];
-    char **directories = NULL;
-    int last = 0;
-    char *dir = NULL;
-
-    getcwd(pwd, 2048);
-    directories = my_str_to_all_array(pwd, "/");
-    last = my_strlen_array(directories);
-    if (last == 0)
-        dir = "/";
-    else
-        dir = directories[last - 1];
-    if (isatty(0) && exit == 0)
-        mini_printf("%s ", dir);
-    if (isatty(0) && exit != 0)
-        mini_printf("%s ", dir);
-    free_str_array(directories);
-    return getline(user_input, &byteread, stdin);
+    tcgetattr(STDIN_FILENO, &old_rules);
+    new_rules = old_rules;
+    new_rules.c_lflag &= ~ICANON;
+    new_rules.c_lflag &= ~ECHO;
+    tcsetattr(STDIN_FILENO, TCSANOW, &new_settings);
+    print_prompt("42sh>");
+    handle_user_input_loop(input, &cursor_pos, &input_length, hist);
+    printf("\n");
+    *user_input = strdup(input);
+    tcsetattr(STDIN_FILENO, TCSANOW, &old_rules);
+    free(input);
+    return strlen(*user_input);
 }
 
 int mysh(char ***env)
 {
     char *user_input = NULL;
     int exit = 0;
+    history_t *hist = initialize_history();
 
-    while (get_user_input(&user_input, exit) != EOF) {
+    while (get_user_input(&user_input, hist) != EOF) {
         if (!input_not_empty(user_input))
             continue;
         replace_endline(user_input);
@@ -58,10 +48,9 @@ int mysh(char ***env)
         exit = process_multiple_command(user_input, env);
         free(user_input);
         user_input = NULL;
-    }
-    if (isatty(0))
-        mini_printf("exit\n");
-    free_mysh(user_input, env);
+    }    
+    cleanup_history(hist);
+    print_exit_message();
     return exit;
 }
 
