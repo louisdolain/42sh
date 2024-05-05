@@ -23,7 +23,7 @@ void print_prompt(const char *prompt)
 void print_input(char *input, int cursor_pos, int input_length)
 {
     printf("\r\033[K");
-    printf("\r42sh> %s", input);
+    printf("\r42sh %s", input);
     for (int i = 0; i < input_length - cursor_pos; i++) {
         printf("\b");
     }

@@ -82,9 +82,7 @@ int process_recursive(token_t *token, char ***env)
         token->under_tokens[0]->output_fd == 1) {
         return process_redirected_token(token, env);
     } else {
-        exit_status = recursive_compute(token->under_tokens[0], env);
-        exit_status = recursive_compute(token->under_tokens[1], env);
-        return exit_status;
+        return process_operators(token, env);
     }
     return exit_status;
 }

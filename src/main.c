@@ -23,7 +23,7 @@ int get_user_input(char **user_input, history_t *hist)
     new_rules.c_lflag &= ~ICANON;
     new_rules.c_lflag &= ~ECHO;
     tcsetattr(STDIN_FILENO, TCSANOW, &new_rules);
-    print_prompt("42sh>");
+    print_prompt("42sh");
     handle_user_input_loop(input, &cursor_pos, &input_length, hist);
     printf("\n");
     *user_input = strdup(input);
