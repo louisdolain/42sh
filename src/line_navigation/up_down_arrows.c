@@ -29,7 +29,8 @@ void add_to_history(history_t *hist, const char *input)
 {
     if (hist->history_size == MAX_HISTORY_SIZE) {
         free(hist->history[0]);
-        memmove(hist->history, hist->history + 1, (MAX_HISTORY_SIZE - 1) * sizeof(char *));
+        memmove(hist->history, hist->history + 1,
+            (MAX_HISTORY_SIZE - 1) * sizeof(char *));
         hist->history_size--;
     }
     hist->history[hist->history_size] = strdup(input);
@@ -38,7 +39,8 @@ void add_to_history(history_t *hist, const char *input)
     hist->current_history_index = hist->history_size;
 }
 
-static void update_input_from_history(history_t *hist, char *input, int *input_length, int *cursor_pos)
+static void update_input_from_history(history_t *hist, char *input,
+    int *input_length, int *cursor_pos)
 {
     if (hist->current_history_index == hist->history_size) {
         input[0] = '\0';
