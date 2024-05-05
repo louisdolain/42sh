@@ -19,7 +19,8 @@ void handle_arrow_key(input_t *input_data, char c)
             handle_left_arrow(input_data->cursor_pos);
             break;
         case 67:
-            handle_right_arrow(input_data->input, input_data->cursor_pos, input_data->input_length);
+            handle_right_arrow(input_data->input,
+            input_data->cursor_pos, input_data->input_length);
             break;
     }
 }

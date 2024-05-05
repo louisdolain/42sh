@@ -35,7 +35,6 @@ void add_to_history(history_t *hist, const char *input)
     }
     hist->history[hist->history_size] = strdup(input);
     hist->history_size++;
-
     hist->current_history_index = hist->history_size;
 }
 

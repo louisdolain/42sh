@@ -20,7 +20,8 @@ int input_not_empty(char *user_input)
     return 0;
 }
 
-void handle_user_input_loop(char *input, int *cursor_pos, int *input_length, history_t *hist)
+void handle_user_input_loop(char *input, int *cursor_pos,
+    int *input_length, history_t *hist)
 {
     input_t input_data = { input, cursor_pos, input_length, hist };
     char c;

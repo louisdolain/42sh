@@ -22,7 +22,7 @@ int get_user_input(char **user_input, history_t *hist)
     new_rules = old_rules;
     new_rules.c_lflag &= ~ICANON;
     new_rules.c_lflag &= ~ECHO;
-    tcsetattr(STDIN_FILENO, TCSANOW, &new_settings);
+    tcsetattr(STDIN_FILENO, TCSANOW, &new_rules);
     print_prompt("42sh>");
     handle_user_input_loop(input, &cursor_pos, &input_length, hist);
     printf("\n");
@@ -48,7 +48,7 @@ int mysh(char ***env)
         exit = process_multiple_command(user_input, env);
         free(user_input);
         user_input = NULL;
-    }    
+    }
     cleanup_history(hist);
     print_exit_message();
     return exit;
