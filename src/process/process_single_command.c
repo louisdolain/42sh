@@ -8,17 +8,17 @@
 #include "my.h"
 #include "process.h"
 
-<<<<<<< .merge_file_dkfgSe
-int process_parent(pid_t pid, char **parsed_input,
-=======
-static int process_parent(__pid_t pid, char **parsed_input,
->>>>>>> .merge_file_pqzPAh
+static int process_parent(pid_t pid, char **parsed_input,
     char **paths, char ***env)
 {
     int status;
     int res;
 
-    waitpid(pid, &status, 0);
+    if (my_strcmp(parsed_input[my_strlen_array(parsed_input) - 1], "&") == 0) {
+        set_job_to_bg(pid);
+    } else {
+        waitpid(pid, &status, 0);
+    }
     res = WEXITSTATUS(status);
     for (int i = 0; BULLETIN_ARRAY[i].bulletin; i++)
         if (strcmp(BULLETIN_ARRAY[i].bulletin, parsed_input[0]) == 0)
@@ -79,7 +79,7 @@ void restore_quotes(char **parsed_input)
 int exec_cmd(char **parsed_input,
     char **paths, char ***env)
 {
-    __pid_t pid;
+    pid_t pid;
 
     pid = fork();
     if (pid == 0) {
@@ -94,10 +94,6 @@ int process_command(char *command, char ***env)
     char **bin_path_list = get_bin_path_list(*env);
     char **parsed_input = NULL;
     char **paths = NULL;
-<<<<<<< .merge_file_dkfgSe
-    pid_t pid;
-=======
->>>>>>> .merge_file_pqzPAh
 
     handle_quotes(command);
     parsed_input = my_str_to_all_array(command, " \t");
