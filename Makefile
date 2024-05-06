@@ -61,7 +61,7 @@ SRC_TEST = $(SRC_FOLDER)parsing/*.c \
 		$(SRC_FOLDER)globbing.c \
 		$(SRC_FOLDER)error/*.c \
 		$(TEST_FOLDER)parsing/parser.c \
-		$(TEST_FOLDER)parsing/unit_tests.c
+		$(TEST_FOLDER)globbings_test/unit_tests.c
 
 OBJ_MAIN = $(MAIN:.c=.o)
 OBJ_SRC = $(SRC:.c=.o)
