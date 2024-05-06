@@ -54,7 +54,14 @@ SRC_BASIC =	$(LIB_BASIC_FOLDER)my_printf.c \
 		$(LIB_BASIC_FOLDER)open_file.c
 
 SRC_TEST = $(SRC_FOLDER)parsing/*.c \
+		$(SRC_FOLDER)process/*.c \
+		$(SRC_FOLDER)bulletins/*.c \
+		$(SRC_FOLDER)tools/*.c \
+		$(SRC_FOLDER)backticks/*.c \
+		$(SRC_FOLDER)globbing.c \
+		$(SRC_FOLDER)error/*.c \
 		$(TEST_FOLDER)parsing/parser.c \
+		$(TEST_FOLDER)parsing/unit_tests.c
 
 OBJ_MAIN = $(MAIN:.c=.o)
 OBJ_SRC = $(SRC:.c=.o)
