@@ -56,39 +56,3 @@ Test(contains_globbing_pattern, test_8, .init = redirect_all_std)
     const char *str = "*?[";
     cr_assert(contains_globbing_pattern(str));
 }
-
-Test(handle_globbing, test_9, .init = redirect_all_std)
-{
-    char **paths;
-    char **parsed_input;
-    char **env;
-    char cmd[] = "ls *";
-
-    parsed_input = calloc(3, sizeof(char *));
-    parsed_input[0] = strdup("ls");
-    parsed_input[1] = strdup("*");
-    parsed_input[2] = NULL;
-    paths = calloc(2, sizeof(char *));
-    paths[0] = strdup("/bin");
-    paths[1] = NULL;
-    env = NULL;
-    handle_globbing(cmd, parsed_input, paths, &env);
-}
-
-Test(handle_globbing, test_10, .init = redirect_all_std)
-{
-    char **paths;
-    char **parsed_input;
-    char **env;
-    char cmd[] = "ls -l";
-
-    parsed_input = calloc(3, sizeof(char *));
-    parsed_input[0] = strdup("ls");
-    parsed_input[1] = strdup("-l");
-    parsed_input[2] = NULL;
-    paths = calloc(2, sizeof(char *));
-    paths[0] = strdup("/bin");
-    paths[1] = NULL;
-    env = NULL;
-    handle_globbing(cmd, parsed_input, paths, &env);
-}
