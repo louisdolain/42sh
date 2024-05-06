@@ -13,4 +13,4 @@
 size_t nbr_wdr(const char *str);
 int handle_globbing(char *cmd, char **parsed_input, char **paths, char ***env);
 int contains_globbing_pattern(const char *str);
-int exec_it(char **parsed_input, char **paths, char ***env);
+int exec_cmd(char **parsed_input, char **paths, char ***env);
