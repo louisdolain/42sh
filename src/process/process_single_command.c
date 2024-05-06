@@ -8,7 +8,7 @@
 #include "my.h"
 #include "process.h"
 
-int process_parent(__pid_t pid, char **parsed_input,
+int process_parent(pid_t pid, char **parsed_input,
     char **paths, char ***env)
 {
     int status;
@@ -77,7 +77,7 @@ int process_command(char *command, char ***env)
     char **bin_path_list = get_bin_path_list(*env);
     char **parsed_input = NULL;
     char **paths = NULL;
-    __pid_t pid;
+    pid_t pid;
 
     handle_quotes(command);
     parsed_input = my_str_to_all_array(command, " \t");

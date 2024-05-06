@@ -31,7 +31,6 @@ SRC =	$(SRC_FOLDER)tools/tools.c \
 		$(SRC_FOLDER)parsing/parse_token_redirections.c \
 		$(SRC_FOLDER)backticks/backticks.c \
 		$(SRC_FOLDER)error/parantheses_error.c	\
-		$(SRC_FOLDER)alias.c		\
 
 SRC_BASIC =	$(LIB_BASIC_FOLDER)my_printf.c \
 		$(LIB_BASIC_FOLDER)my_printf2.c \
