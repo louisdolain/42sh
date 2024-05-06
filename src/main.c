@@ -43,7 +43,7 @@ int get_user_input(char **user_input, int exit)
     return getline(user_input, &byteread, stdin);
 }
 
-int mysh(char ***env)
+int mysh(shell_t *shell)
 {
     char *user_input = NULL;
     int exit = 0;
@@ -54,14 +54,14 @@ int mysh(char ***env)
         replace_endline(user_input);
         if (my_exit(user_input, &exit))
             break;
-        fill_env(env);
-        exit = process_multiple_command(user_input, env);
+        fill_env(shell->env);
+        exit = process_multiple_command(user_input, shell);
         free(user_input);
         user_input = NULL;
     }
     if (isatty(0))
         mini_printf("exit\n");
-    free_mysh(user_input, env);
+    free_mysh(user_input, shell->env);
     return exit;
 }
 
@@ -81,15 +81,15 @@ char **create_env(void)
 
 int main(int ac, char **av, char **env)
 {
-    char **envcpy = NULL;
+    shell_t shell;
 
     if (env[0] != NULL)
-        envcpy = my_strdup_array(env);
+        shell.env = my_strdup_array(env);
     else
-        envcpy = create_env();
+        shell.env = create_env();
     if (ac != 1 || av[1] != NULL) {
-        free_str_array(envcpy);
+        free_str_array(shell.env);
         return 84;
     }
-    return mysh(&envcpy);
+    return mysh(&shell);
 }

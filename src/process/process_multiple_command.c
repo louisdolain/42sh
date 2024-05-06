@@ -9,13 +9,13 @@
 #include "process.h"
 #include "parsing.h"
 
-static int process_single_token(token_t *token, char ***env)
+static int process_single_token(token_t *token, shell_t *shell)
 {
-    char *temp = handle_backticks(token->content, env);
+    char *temp = handle_backticks(token->content, &shell->env);
 
     free(token->content);
     token->content = temp;
-    return process_command(token->content, env);
+    return process_command(token->content, shell);
 }
 
 static void process_token_right(token_t *token, int pipefd[2], char ***env)
@@ -72,22 +72,22 @@ static int process_redirected_token(token_t *token, char ***env)
     return EXIT_SUCCESS;
 }
 
-int process_recursive(token_t *token, char ***env)
+int process_recursive(token_t *token, shell_t *shell)
 {
     int exit_status = 0;
 
     if (!token->under_tokens)
-        return process_single_token(token, env);
+        return process_single_token(token, shell);
     else if (token->under_tokens[0]->output_redirected &&
         token->under_tokens[0]->output_fd == 1) {
-        return process_redirected_token(token, env);
+        return process_redirected_token(token, *shell->env);
     } else {
-        return process_operators(token, env);
+        return process_operators(token, *shell->env);
     }
     return exit_status;
 }
 
-int recursive_compute(token_t *token, char ***env)
+int recursive_compute(token_t *token, shell_t *shell)
 {
     int exit_status;
     int saved_out;
@@ -98,7 +98,7 @@ int recursive_compute(token_t *token, char ***env)
         open_token_double_output_redirections
         (token, &saved_out) == EXIT_FAILURE)
         return EXIT_FAILURE;
-    exit_status = process_recursive(token, env);
+    exit_status = process_recursive(token, shell);
     close_token_redirections(token, saved_in, saved_out);
     return exit_status;
 }
@@ -119,7 +119,7 @@ static token_t *create_token(char *user_input)
     return token;
 }
 
-int process_multiple_command(char *user_input, char ***env)
+int process_multiple_command(char *user_input, shell_t *shell)
 {
     token_t *token = create_token(user_input);
     int exit_status = 0;
@@ -131,7 +131,7 @@ int process_multiple_command(char *user_input, char ***env)
     remove_outer_parentheses(token->content);
     ll_parser(token);
     redirect_tokens(token);
-    exit_status = recursive_compute(token, env);
+    exit_status = recursive_compute(token, shell);
     destroy_tokens(token);
     return exit_status;
 }

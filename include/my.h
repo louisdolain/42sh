@@ -23,6 +23,12 @@
     #define SEPARATOR_AND "&&"
     #define SEPARATOR_PIPE '|'
 
+    typedef struct shell_s {
+        char **parsed_input;
+        char **paths;
+        char **env;
+    }shell_t;
+
 // tools functions
 char **get_bin_path_list(char **env);
 void free_mysh(char *user_input, char ***env);

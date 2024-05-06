@@ -8,17 +8,12 @@
 #include "my.h"
 #include "process.h"
 
-static int process_parent(pid_t pid, char **parsed_input,
-    char **paths, char ***env)
+static int process_parent(pid_t pid, shell_t *shell)
 {
     int status;
     int res;
 
-    if (my_strcmp(parsed_input[my_strlen_array(parsed_input) - 1], "&") == 0) {
-        set_job_to_bg(pid);
-    } else {
-        waitpid(pid, &status, 0);
-    }
+    waitpid(pid, &status, 0);
     res = WEXITSTATUS(status);
     for (int i = 0; BULLETIN_ARRAY[i].bulletin; i++)
         if (strcmp(BULLETIN_ARRAY[i].bulletin, parsed_input[0]) == 0)
@@ -28,7 +23,7 @@ static int process_parent(pid_t pid, char **parsed_input,
     return res;
 }
 
-int process_child(char **parsed_input, char **paths, char ***env)
+int process_child(shell_t *shell)
 {
     for (int i = 0; BULLETIN_ARRAY[i].bulletin; i++)
         if (strcmp(BULLETIN_ARRAY[i].bulletin, parsed_input[0]) == 0)
@@ -76,33 +71,30 @@ void restore_quotes(char **parsed_input)
     }
 }
 
-int exec_cmd(char **parsed_input,
-    char **paths, char ***env)
+int exec_cmd(shell_t *shell)
 {
     pid_t pid;
 
     pid = fork();
     if (pid == 0) {
-        process_child(parsed_input, paths, env);
+        process_child(shell);
     } else
-        return process_parent(pid, parsed_input, paths, env);
+        return process_parent(pid, shell);
     return 0;
 }
 
-int process_command(char *command, char ***env)
+int process_command(char *command, shell_t *shell)
 {
-    char **bin_path_list = get_bin_path_list(*env);
-    char **parsed_input = NULL;
-    char **paths = NULL;
+    char **bin_path_list = get_bin_path_list(shell->env);
 
     handle_quotes(command);
-    parsed_input = my_str_to_all_array(command, " \t");
-    restore_quotes(parsed_input);
-    paths = get_fct_paths(bin_path_list, parsed_input[0]);
+    shell->parsed_input = my_str_to_all_array(command, " \t");
+    restore_quotes(shell->parsed_input);
+    shell->paths = get_fct_paths(bin_path_list, shell->parsed_input[0]);
     if (contains_globbing_pattern(command)) {
-        handle_globbing(command, parsed_input, paths, env);
+        handle_globbing(command, shell);
         return 0;
     }
     free_str_array(bin_path_list);
-    return exec_cmd(parsed_input, paths, env);
+    return exec_cmd(shell);
 }

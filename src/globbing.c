@@ -34,24 +34,23 @@ int contains_globbing_pattern(const char *str)
         || strchr(str, '[') != NULL;
 }
 
-int handle_globbing(char *cmd, char **parsed_input,
-    char **paths, char ***env)
+int handle_globbing(char *cmd, shell_t *shell)
 {
     glob_t globbuf;
     size_t nbr_bfr_glob = nbr_wdr(cmd);
     int i = 0;
 
     globbuf.gl_offs = nbr_bfr_glob;
-    while (parsed_input[i]) {
-        glob(parsed_input[i], GLOB_DOOFFS |
+    while (shell->parsed_input[i]) {
+        glob(shell->parsed_input[i], GLOB_DOOFFS |
             (i == 0 ? 0 : GLOB_APPEND), NULL, &globbuf);
         i++;
     }
     for (int j = 0; j < i; j++) {
-        if (contains_globbing_pattern(parsed_input[j]))
+        if (contains_globbing_pattern(shell->parsed_input[j]))
             continue;
-        globbuf.gl_pathv[j] = parsed_input[j];
+        globbuf.gl_pathv[j] = shell->parsed_input[j];
     }
-    exec_cmd(globbuf.gl_pathv, paths, env);
+    exec_cmd(shell);
     return 0;
 }
