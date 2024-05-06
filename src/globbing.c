@@ -52,6 +52,6 @@ int handle_globbing(char *cmd, char **parsed_input,
             continue;
         globbuf.gl_pathv[j] = parsed_input[j];
     }
-    exec_it(globbuf.gl_pathv, paths, env);
+    exec_cmd(globbuf.gl_pathv, paths, env);
     return 0;
 }
