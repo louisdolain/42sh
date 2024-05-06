@@ -72,7 +72,7 @@ void restore_quotes(char **parsed_input)
     }
 }
 
-int exec_it(char **parsed_input,
+int exec_cmd(char **parsed_input,
     char **paths, char ***env)
 {
     __pid_t pid;
@@ -100,6 +100,5 @@ int process_command(char *command, char ***env)
         return 0;
     }
     free_str_array(bin_path_list);
-    exec_it(parsed_input, paths, env);
-    return 0;
+    return exec_cmd(parsed_input, paths, env);
 }
