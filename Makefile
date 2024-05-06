@@ -30,7 +30,8 @@ SRC =	$(SRC_FOLDER)tools/tools.c \
 		$(SRC_FOLDER)process/process_operators.c \
 		$(SRC_FOLDER)parsing/parse_token_redirections.c \
 		$(SRC_FOLDER)backticks/backticks.c \
-		$(SRC_FOLDER)error/parantheses_error.c	\
+		$(SRC_FOLDER)globbing.c \
+		$(SRC_FOLDER)error/parantheses_error.c
 
 SRC_BASIC =	$(LIB_BASIC_FOLDER)my_printf.c \
 		$(LIB_BASIC_FOLDER)my_printf2.c \
@@ -53,7 +54,14 @@ SRC_BASIC =	$(LIB_BASIC_FOLDER)my_printf.c \
 		$(LIB_BASIC_FOLDER)open_file.c
 
 SRC_TEST = $(SRC_FOLDER)parsing/*.c \
+		$(SRC_FOLDER)process/*.c \
+		$(SRC_FOLDER)bulletins/*.c \
+		$(SRC_FOLDER)tools/*.c \
+		$(SRC_FOLDER)backticks/*.c \
+		$(SRC_FOLDER)globbing.c \
+		$(SRC_FOLDER)error/*.c \
 		$(TEST_FOLDER)parsing/parser.c \
+		$(TEST_FOLDER)globbings_test/unit_tests.c
 
 OBJ_MAIN = $(MAIN:.c=.o)
 OBJ_SRC = $(SRC:.c=.o)
