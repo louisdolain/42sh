@@ -31,6 +31,7 @@ SRC =	$(SRC_FOLDER)tools/tools.c \
 		$(SRC_FOLDER)process/process_operators.c \
 		$(SRC_FOLDER)parsing/parse_token_redirections.c \
 		$(SRC_FOLDER)backticks/backticks.c \
+		$(SRC_FOLDER)globbing.c \
 		$(wildcard src/history/*.c)
 
 SRC_BASIC =	$(LIB_BASIC_FOLDER)my_printf.c \
@@ -55,9 +56,7 @@ SRC_BASIC =	$(LIB_BASIC_FOLDER)my_printf.c \
 		$(LIB_BASIC_FOLDER)number.c
 
 SRC_TEST = $(SRC_FOLDER)parsing/*.c \
-		$(TEST_FOLDER)parsing/parser.c	\
-		$(SRC_FOLDER)history/*.c	\
-		$(TEST_FOLDER)history.c	\
+		$(TEST_FOLDER)parsing/parser.c \
 
 OBJ_MAIN = $(MAIN:.c=.o)
 OBJ_SRC = $(SRC:.c=.o)
