@@ -20,20 +20,35 @@ int input_not_empty(char *user_input)
     return 0;
 }
 
-void handle_user_input_loop(char *input, int *cursor_pos,
+static int process_user_input(input_t *input_data)
+{
+    char *input = input_data->input;
+    history_t *hist = input_data->hist;
+    char c = input_data->c;
+
+    if (c == '\n') {
+        add_to_history(hist, input);
+        return 0;
+    } else if (c == EOF)
+        return EOF;
+    else
+        handle_rest(input_data, c);
+    return 1;
+}
+
+int handle_user_input_loop(char *input, int *cursor_pos,
     int *input_length, history_t *hist)
 {
-    input_t input_data = { input, cursor_pos, input_length, hist };
     char c;
+    input_t input_data;
+    int result = 0;
 
     while (1) {
         print_input(input, *cursor_pos, *input_length);
         c = getchar();
-        if (c == '\n') {
-            add_to_history(hist, input);
-            break;
-        } else {
-            handle_rest(&input_data, c);
-        }
+        input_data = (input_t){input, cursor_pos, input_length, hist, c};    
+        result = process_user_input(&input_data);
+        if (result == 0 || result == EOF)
+            return result;
     }
 }

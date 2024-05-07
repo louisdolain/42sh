@@ -29,8 +29,8 @@ void print_exit_message(void);
 void print_input(char *input, int cursor_pos, int input_length);
 
 //handle_user_input.c
-void handle_user_input_loop(char *input, int *cursor_pos,
-    int *input_length, history_t *hist);
+int handle_user_input_loop(char *input, int *cursor_pos,
+			   int *input_length, history_t *hist);
 int input_not_empty(char *user_input);
 
 //up_down_arrows.c

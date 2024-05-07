@@ -4,31 +4,29 @@
 ** File description:
 ** main.c
 */
-
 #include "my.h"
 #include "process.h"
 #include "navigation.h"
 #include <termios.h>
 
-int get_user_input(char **user_input, history_t *hist)
+int get_user_input(char **user_input,  history_t *hist)
 {
     struct termios old_rules;
     struct termios new_rules;
     char *input = calloc(MAX_INPUT_LENGTH, sizeof(char));
     int cursor_pos = 0;
     int input_length = 0;
+    int result = 0;
 
-    tcgetattr(STDIN_FILENO, &old_rules);
-    new_rules = old_rules;
-    new_rules.c_lflag &= ~ICANON;
-    new_rules.c_lflag &= ~ECHO;
-    tcsetattr(STDIN_FILENO, TCSANOW, &new_rules);
-    print_prompt("42sh");
-    handle_user_input_loop(input, &cursor_pos, &input_length, hist);
-    printf("\n");
+    set_terminal_mode(&old_rules, &new_rules);
+    result = handle_user_input_loop(input, &cursor_pos, &input_length, hist);
+    if (isatty(STDIN_FILENO))
+        printf("\n");    
     *user_input = strdup(input);
     tcsetattr(STDIN_FILENO, TCSANOW, &old_rules);
     free(input);
+    if (result == EOF)
+        return EOF;
     return strlen(*user_input);
 }
 

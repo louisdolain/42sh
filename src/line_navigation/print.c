@@ -7,6 +7,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdlib.h>
+
+#include "my.h"
 
 void print_exit_message(void)
 {
@@ -14,16 +17,11 @@ void print_exit_message(void)
         printf("exit\n");
 }
 
-void print_prompt(const char *prompt)
-{
-    printf("\r%s ", prompt);
-    fflush(stdout);
-}
-
 void print_input(char *input, int cursor_pos, int input_length)
 {
     printf("\r\033[K");
-    printf("\r42sh %s", input);
+    if (isatty(STDIN_FILENO))
+        printf("\r42sh %s",  input);
     for (int i = 0; i < input_length - cursor_pos; i++) {
         printf("\b");
     }
