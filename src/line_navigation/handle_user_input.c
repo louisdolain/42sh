@@ -46,7 +46,7 @@ int handle_user_input_loop(char *input, int *cursor_pos,
     while (1) {
         print_input(input, *cursor_pos, *input_length);
         c = getchar();
-        input_data = (input_t){input, cursor_pos, input_length, hist, c};    
+        input_data = (input_t){input, cursor_pos, input_length, hist, c};
         result = process_user_input(&input_data);
         if (result == 0 || result == EOF)
             return result;

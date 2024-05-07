@@ -21,7 +21,7 @@ void print_input(char *input, int cursor_pos, int input_length)
 {
     printf("\r\033[K");
     if (isatty(STDIN_FILENO))
-        printf("\r42sh %s",  input);
+        printf("\r42sh %s", input);
     for (int i = 0; i < input_length - cursor_pos; i++) {
         printf("\b");
     }

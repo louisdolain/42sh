@@ -9,7 +9,7 @@
 #include "navigation.h"
 #include <termios.h>
 
-int get_user_input(char **user_input,  history_t *hist)
+int get_user_input(char **user_input, history_t *hist)
 {
     struct termios old_rules;
     struct termios new_rules;
@@ -21,7 +21,7 @@ int get_user_input(char **user_input,  history_t *hist)
     set_terminal_mode(&old_rules, &new_rules);
     result = handle_user_input_loop(input, &cursor_pos, &input_length, hist);
     if (isatty(STDIN_FILENO))
-        printf("\n");    
+        printf("\n");
     *user_input = strdup(input);
     tcsetattr(STDIN_FILENO, TCSANOW, &old_rules);
     free(input);
