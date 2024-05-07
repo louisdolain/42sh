@@ -83,5 +83,17 @@ commands=(
     $'((ls -l ; cat < Makefile; echo Hello) | cat -e ; cat Makefile) | grep lib ; cat src/main.c'
     $'rm -rf gros ; ((ls -l | cat -e) ; mkdir gros ; (ls -l | grep gros) ; rm -rf gros)'
     $'rm -rf file filetotest'
+    $'echo f*'
+    $'echo *.c'
+    $'echo [a-z]*'
+    $'echo ???.c'
+    $'echo file[abc].txt'
+    $'echo file[!abc].txt'
+    $'ls *.c'
+    $'rm *.o'
+    $'cp *.c ../backup/'
+    $'mv file{1,2,3}.txt dir/'
+    $'find . -name "[!a-z]*"'
+    $'grep "main(" *.c'
 )
 generate_tests "${commands[@]}"
