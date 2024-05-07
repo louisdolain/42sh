@@ -27,6 +27,7 @@ char **my_str_to_all_array(char *str, char *separators);
 int str_begin_with(char *str, char *find);
 void free_str_array(char **array);
 char *concat_mem(char *str1, char *str2, char *str3);
+char *concat_mem_2(char *str1, char *str2);
 int my_strcmp(char const *s1, char const *s2);
 int mini_printf(char *str, ...);
 int my_putstr_array(char **array);

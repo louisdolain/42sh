@@ -24,6 +24,7 @@ void process_env(char ***parsed_input,
 void process_segfault(int status, int *res);
 void process_history(char ***parsed_input,
     char ***env, int *res, history_t **list);
+void process_variable(char ***parsed_input, char ***env, int *, history_t **list);
 
 static const bulletins_t BULLETIN_ARRAY[] = {
     {
@@ -53,6 +54,18 @@ static const bulletins_t BULLETIN_ARRAY[] = {
     {
         .bulletin = "!",
         .function = process_history
+    },
+    {
+        .bulletin = "echo",
+        .function = process_variable
+    },
+    {
+        .bulletin = "set",
+        .function = process_variable
+    },
+    {
+        .bulletin = "unset",
+        .function = process_variable
     },
     {
         .bulletin = NULL
