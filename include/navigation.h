@@ -9,6 +9,7 @@
     #define NAVIGATION_H_
     #define MAX_INPUT_LENGTH 1000
     #define MAX_HISTORY_SIZE 100
+    #include <termios.h> 
 
 typedef struct history_s {
     char *history[MAX_HISTORY_SIZE];
@@ -21,6 +22,7 @@ typedef struct input_s {
     int *cursor_pos;
     int *input_length;
     history_t *hist;
+    char c;
 } input_t;
 
 //print.c
@@ -29,9 +31,11 @@ void print_exit_message(void);
 void print_input(char *input, int cursor_pos, int input_length);
 
 //handle_user_input.c
-int handle_user_input_loop(char *input, int *cursor_pos,
-			   int *input_length, history_t *hist);
+int handle_user_input_loop(char *input, int *cursor_pos, int *input_length, history_t *hist);
 int input_not_empty(char *user_input);
+
+//terminal_setup.c
+void set_terminal_mode(struct termios *old_rules, struct termios *new_rules);
 
 //up_down_arrows.c
 history_t *initialize_history(void);

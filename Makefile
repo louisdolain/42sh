@@ -37,6 +37,7 @@ SRC =	$(SRC_FOLDER)tools/tools.c \
                 $(SRC_FOLDER)line_navigation/left_right_arrows.c \
                 $(SRC_FOLDER)line_navigation/handle_arrow_keys.c \
                 $(SRC_FOLDER)line_navigation/up_down_arrows.c \
+                $(SRC_FOLDER)line_navigation/terminal_setup.c \
 
 SRC_BASIC =	$(LIB_BASIC_FOLDER)my_printf.c \
 		$(LIB_BASIC_FOLDER)my_printf2.c \
