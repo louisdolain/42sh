@@ -9,7 +9,7 @@
 
 
 #ifndef HISTORY_H_
-#define HISTORY_H_
+    #define HISTORY_H_
 
 
 typedef struct history_s {

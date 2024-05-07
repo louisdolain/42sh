@@ -24,7 +24,8 @@ void process_env(char ***parsed_input,
 void process_segfault(int status, int *res);
 void process_history(char ***parsed_input,
     char ***env, int *res, history_t **list);
-void process_variable(char ***parsed_input, char ***env, int *, history_t **list);
+void process_variable(char ***parsed_input,
+    char ***env, int *, history_t **list);
 
 static const bulletins_t BULLETIN_ARRAY[] = {
     {

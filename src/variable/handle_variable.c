@@ -10,7 +10,7 @@
 #include "my.h"
 #include "variables.h"
 
-void print_term(char ***env)
+static void print_term(char ***env)
 {
     char *temp = my_getenv(*env, "TERM") + 5;
 
@@ -20,7 +20,7 @@ void print_term(char ***env)
     return;
 }
 
-void print_cwd(void)
+static void print_cwd(void)
 {
     char *pwd = malloc(sizeof(char) * 2048);
 
@@ -29,14 +29,15 @@ void print_cwd(void)
     free(pwd);
 }
 
-void add_local(variable_t **list, char ***parsed_input)
+static void add_local(variable_t **list, char ***parsed_input)
 {
     variable_t *new = malloc(sizeof(variable_t));
+
     if (!new) {
-        perror("malloc");
-        exit(EXIT_FAILURE);
+        return;
     }
-    if (strcmp((*parsed_input)[2], "=") != 0 || my_strlen_array((*parsed_input)) != 4) {
+    if (strcmp((*parsed_input)[2], "=") != 0 ||
+        my_strlen_array((*parsed_input)) != 4) {
         free(new);
         return;
     }
@@ -46,7 +47,7 @@ void add_local(variable_t **list, char ***parsed_input)
     *list = new;
 }
 
-void remove_local(variable_t **list, char *parsed_input)
+static void remove_local(variable_t **list, char *parsed_input)
 {
     variable_t *current = *list;
     variable_t *next;
@@ -64,8 +65,7 @@ void remove_local(variable_t **list, char *parsed_input)
     }
 }
 
-
-char *find_local(variable_t **list, char *command)
+static char *find_local(variable_t **list, char *command)
 {
     variable_t *current = *list;
 
@@ -78,7 +78,8 @@ char *find_local(variable_t **list, char *command)
     return NULL;
 }
 
-void process_variable(char ***parsed_input, char ***env, int *res, history_t **list)
+void process_variable(char ***parsed_input, char ***env,
+    int *res, history_t **list)
 {
     static variable_t *var = NULL;
     char *temp = NULL;
