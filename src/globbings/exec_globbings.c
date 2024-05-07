@@ -17,12 +17,24 @@ int check_glob(char **parsed_input, glob_t globbuf, int i)
     return 0;
 }
 
+int count_arguments(char **parsed_input, int num_args)
+{
+    while (parsed_input[num_args] != NULL) {
+        num_args++;
+    }
+    return num_args;
+}
+
 int handle_globbing(char **parsed_input,
     char **paths, char ***env)
 {
     glob_t globbuf;
     int i = 0;
+    int num_args = 0;
 
+    num_args = count_arguments(parsed_input, num_args);
+    if (num_args == 1)
+        return -1;
     globbuf.gl_offs = 1;
     while (parsed_input[i]) {
         glob(parsed_input[i], GLOB_DOOFFS |
@@ -30,7 +42,6 @@ int handle_globbing(char **parsed_input,
         i++;
     }
     if (globbuf.gl_pathc == 0) {
-        printf("Aucun fichier trouvé avec le motif donné.\n");
         globfree(&globbuf);
         return -1;
     }
