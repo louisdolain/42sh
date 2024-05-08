@@ -7,6 +7,7 @@
 
 #include "my.h"
 #include "process.h"
+extern char *user_cmd;
 
 static void clean_exiting_process(int status, int res,
     char ***parsed_input, char **paths)
@@ -33,7 +34,7 @@ int process_parent(pid_t pid, char ***parsed_input,
         break;
         }
     }
-    history_add(&list, array_to_str((*parsed_input)));
+    history_add(&list, strdup(user_cmd));
     if (strcmp((*parsed_input)[0], temp) > 0)
         process_multiple_command(array_to_str((*parsed_input)), env);
     clean_exiting_process(status, res, parsed_input, paths);
@@ -78,7 +79,7 @@ void handle_quotes(char *command)
     }
 }
 
-static restore_quotes(char ***parsed_input)
+static void restore_quotes(char ***parsed_input)
 {
     for (int i = 0; (*parsed_input) && (*parsed_input)[i]; i++) {
         for (int j = 0; (*parsed_input)[i][j]; j++) {
@@ -93,7 +94,7 @@ static restore_quotes(char ***parsed_input)
 int exec_cmd(char ***parsed_input,
     char **paths, char ***env)
 {
-    __pid_t pid;
+    pid_t pid;
 
     pid = fork();
     if (pid == 0) {
@@ -108,7 +109,7 @@ int process_command(char *command, char ***env)
     char **bin_path_list = get_bin_path_list(*env);
     char **parsed_input = NULL;
     char **paths = NULL;
-    __pid_t pid;
+    pid_t pid;
 
     handle_quotes(command);
     parsed_input = my_str_to_all_array(command, " \t");

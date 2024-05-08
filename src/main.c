@@ -7,6 +7,7 @@
 
 #include "my.h"
 #include "process.h"
+const char *user_cmd;
 
 int input_not_empty(char *user_input)
 {
@@ -55,6 +56,7 @@ int mysh(char ***env)
         if (my_exit(user_input, &exit))
             break;
         fill_env(env);
+        user_cmd = user_input;
         exit = process_multiple_command(user_input, env);
         free(user_input);
         user_input = NULL;

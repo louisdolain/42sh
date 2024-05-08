@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
+extern char *user_cmd;
 
 void replace_array(char ***old_array, char **new_array)
 {
@@ -46,4 +47,5 @@ void exclamation_mark(history_t **list, char *command, char ***input)
         return;
     }
     replace_array(input, new_input);
+    user_cmd = temp;
 }
