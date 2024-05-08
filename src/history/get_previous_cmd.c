@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-extern char *user_cmd;
+char *user_cmd;
 
 void replace_array(char ***old_array, char **new_array)
 {

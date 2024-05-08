@@ -7,7 +7,7 @@
 
 #include "my.h"
 #include "process.h"
-const char *user_cmd;
+extern char *user_cmd;
 
 int input_not_empty(char *user_input)
 {

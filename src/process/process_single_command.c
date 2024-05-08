@@ -22,7 +22,7 @@ int process_parent(pid_t pid, char ***parsed_input,
     int status;
     int res;
     static history_t *list = NULL;
-    char *temp = strdup((*parsed_input)[0]);
+    char *temp = strdup(user_cmd);
 
     waitpid(pid, &status, 0);
     res = WEXITSTATUS(status);
@@ -35,8 +35,8 @@ int process_parent(pid_t pid, char ***parsed_input,
         }
     }
     history_add(&list, strdup(user_cmd));
-    if (strcmp((*parsed_input)[0], temp) > 0)
-        process_multiple_command(array_to_str((*parsed_input)), env);
+    if (strcmp(user_cmd, temp) > 0)
+        process_multiple_command(user_cmd, env);
     clean_exiting_process(status, res, parsed_input, paths);
     return res;
 }
