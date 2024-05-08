@@ -38,6 +38,9 @@ SRC =	$(SRC_FOLDER)tools/tools.c \
                 $(SRC_FOLDER)line_navigation/handle_arrow_keys.c \
                 $(SRC_FOLDER)line_navigation/up_down_arrows.c \
                 $(SRC_FOLDER)line_navigation/terminal_setup.c \
+		$(SRC_FOLDER)globbings/globbing.c \
+		$(SRC_FOLDER)globbings/exec_globbings.c \
+		$(SRC_FOLDER)error/parantheses_error.c
 
 SRC_BASIC =	$(LIB_BASIC_FOLDER)my_printf.c \
 		$(LIB_BASIC_FOLDER)my_printf2.c \
@@ -60,6 +63,7 @@ SRC_BASIC =	$(LIB_BASIC_FOLDER)my_printf.c \
 		$(LIB_BASIC_FOLDER)open_file.c
 
 SRC_TEST = $(SRC_FOLDER)parsing/*.c \
+		$(SRC_FOLDER)globbings/globbing.c \
 		$(TEST_FOLDER)parsing/parser.c \
 	   $(SRC_FOLDER)line_navigation/*.c \
 		$(TEST_FOLDER)line_navigation/test_chars.c \
@@ -68,6 +72,7 @@ SRC_TEST = $(SRC_FOLDER)parsing/*.c \
                 $(TEST_FOLDER)line_navigation/test_delete.c \
                 $(TEST_FOLDER)line_navigation/test_arrows.c \
                 $(TEST_FOLDER)line_navigation/test_history.c \
+		$(TEST_FOLDER)globbings_test/unit_tests.c
 
 OBJ_MAIN = $(MAIN:.c=.o)
 OBJ_SRC = $(SRC:.c=.o)

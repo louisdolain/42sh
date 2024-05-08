@@ -8,7 +8,7 @@
 #include "my.h"
 #include "process.h"
 
-int process_parent(__pid_t pid, char **parsed_input,
+static int process_parent(__pid_t pid, char **parsed_input,
     char **paths, char ***env)
 {
     int status;
@@ -72,11 +72,9 @@ void restore_quotes(char **parsed_input)
     }
 }
 
-int process_command(char *command, char ***env)
+int exec_cmd(char **parsed_input,
+    char **paths, char ***env)
 {
-    char **bin_path_list = get_bin_path_list(*env);
-    char **parsed_input = NULL;
-    char **paths = NULL;
     __pid_t pid;
 
     handle_quotes(command);
@@ -92,4 +90,22 @@ int process_command(char *command, char ***env)
     } else
         return process_parent(pid, parsed_input, paths, env);
     return 0;
+}
+
+int process_command(char *command, char ***env)
+{
+    char **bin_path_list = get_bin_path_list(*env);
+    char **parsed_input = NULL;
+    char **paths = NULL;
+
+    handle_quotes(command);
+    parsed_input = my_str_to_all_array(command, " \t");
+    restore_quotes(parsed_input);
+    paths = get_fct_paths(bin_path_list, parsed_input[0]);
+    if (contains_globbing_pattern(command)) {
+        handle_globbing(parsed_input, paths, env);
+        return 0;
+    }
+    free_str_array(bin_path_list);
+    return exec_cmd(parsed_input, paths, env);
 }

@@ -10,8 +10,11 @@
 #include <sys/wait.h>
 #include <stdbool.h>
 #include <errno.h>
+#include <glob.h>
+#include <sys/stat.h>
 #include "basics.h"
 #include "parsing.h"
+#include "globbing.h"
 
 #ifndef MY_H
     #define MY_H
