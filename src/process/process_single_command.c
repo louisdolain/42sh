@@ -77,11 +77,6 @@ int exec_cmd(char **parsed_input,
 {
     __pid_t pid;
 
-    handle_quotes(command);
-    parsed_input = my_str_to_all_array(command, " \t");
-    restore_quotes(parsed_input);
-    paths = get_fct_paths(bin_path_list, parsed_input[0]);
-    free_str_array(bin_path_list);
     pid = fork();
     if (pid == 0) {
         process_child(parsed_input, paths, env);

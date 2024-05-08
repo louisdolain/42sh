@@ -40,7 +40,6 @@ SRC =	$(SRC_FOLDER)tools/tools.c \
                 $(SRC_FOLDER)line_navigation/terminal_setup.c \
 		$(SRC_FOLDER)globbings/globbing.c \
 		$(SRC_FOLDER)globbings/exec_globbings.c \
-		$(SRC_FOLDER)error/parantheses_error.c
 
 SRC_BASIC =	$(LIB_BASIC_FOLDER)my_printf.c \
 		$(LIB_BASIC_FOLDER)my_printf2.c \
