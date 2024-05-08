@@ -78,7 +78,7 @@ void handle_quotes(char *command)
     }
 }
 
-void restore_quotes(char ***parsed_input)
+static restore_quotes(char ***parsed_input)
 {
     for (int i = 0; (*parsed_input) && (*parsed_input)[i]; i++) {
         for (int j = 0; (*parsed_input)[i][j]; j++) {

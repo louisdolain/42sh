@@ -56,7 +56,17 @@ SRC_BASIC =	$(LIB_BASIC_FOLDER)my_printf.c \
 		$(LIB_BASIC_FOLDER)number.c
 
 SRC_TEST = $(SRC_FOLDER)parsing/*.c \
+		$(SRC_FOLDER)backticks/*.c \
+		$(SRC_FOLDER)bulletins/*.c \
+		$(SRC_FOLDER)error/*.c \
+		$(SRC_FOLDER)history/*.c \
+		$(SRC_FOLDER)process/*.c \
+		$(SRC_FOLDER)tools/*.c \
+		$(SRC_FOLDER)globbing.c \
 		$(TEST_FOLDER)parsing/parser.c \
+		$(TEST_FOLDER)globbings_test/unit_tests.c \
+		$(TEST_FOLDER)history.c
+
 
 OBJ_MAIN = $(MAIN:.c=.o)
 OBJ_SRC = $(SRC:.c=.o)

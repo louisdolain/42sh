@@ -9,7 +9,7 @@
 
 
 #ifndef HISTORY_H_
-#define HISTORY_H_
+    #define HISTORY_H_
 
 
 typedef struct history_s {
@@ -35,5 +35,9 @@ char *array_to_str(char **array);
 void my_save(history_t **list);
 void exclamation_mark(history_t **list, char *command, char ***input);
 void history_add(history_t **list, char *command);
+char *find_by_command_prefix(history_t **list, char *command);
+char *find_by_command_number(history_t **list, int number);
+char *find(history_t **list, char *command);
+void replace_array(char ***old_array, char **new_array);
 
 #endif /* !HISTORY_H_ */
