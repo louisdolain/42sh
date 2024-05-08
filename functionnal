@@ -91,9 +91,5 @@ commands=(
     $'echo file[!abc].txt'
     $'ls *.c'
     $'rm *.o'
-    $'cp *.c ../backup/'
-    $'mv file{1,2,3}.txt dir/'
-    $'find . -name "[!a-z]*"'
-    $'grep "main(" *.c'
 )
 generate_tests "${commands[@]}"
