@@ -61,6 +61,13 @@ SRC_BASIC =	$(LIB_BASIC_FOLDER)my_printf.c \
 
 SRC_TEST = $(SRC_FOLDER)parsing/*.c \
 		$(TEST_FOLDER)parsing/parser.c \
+	   $(SRC_FOLDER)line_navigation/*.c \
+		$(TEST_FOLDER)line_navigation/test_chars.c \
+		$(TEST_FOLDER)line_navigation/test_valid_input.c \
+		$(TEST_FOLDER)line_navigation/test_backspace.c \
+                $(TEST_FOLDER)line_navigation/test_delete.c \
+                $(TEST_FOLDER)line_navigation/test_arrows.c \
+                $(TEST_FOLDER)line_navigation/test_history.c \
 
 OBJ_MAIN = $(MAIN:.c=.o)
 OBJ_SRC = $(SRC:.c=.o)

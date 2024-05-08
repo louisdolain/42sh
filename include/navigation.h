@@ -26,6 +26,13 @@ typedef struct input_s {
     char c;
 } input_t;
 
+//handle_keys.c
+void handle_printable(char *input, int *cursor_pos,
+    int *input_length, char c);
+void handle_backspace(char *input, int *cursor_pos,
+    int *input_length);
+void handle_delete(char *input, int *cursor_pos, int *input_length);
+
 //print.c
 void print_prompt(const char *prompt);
 void print_exit_message(void);
@@ -35,6 +42,7 @@ void print_input(char *input, int cursor_pos, int input_length);
 int handle_user_input_loop(char *input, int *cursor_pos,
     int *input_length, history_t *hist);
 int input_not_empty(char *user_input);
+int process_user_input(input_t *input_data);
 
 //terminal_setup.c
 void set_terminal_mode(struct termios *old_rules, struct termios *new_rules);

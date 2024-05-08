@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <ctype.h>
 
-static void handle_printable(char *input, int *cursor_pos,
+void handle_printable(char *input, int *cursor_pos,
     int *input_length, char c)
 {
     if (*input_length < MAX_INPUT_LENGTH - 1) {
@@ -25,7 +25,7 @@ static void handle_printable(char *input, int *cursor_pos,
     }
 }
 
-static void handle_backspace(char *input, int *cursor_pos,
+void handle_backspace(char *input, int *cursor_pos,
     int *input_length)
 {
     if (*cursor_pos > 0) {
@@ -41,7 +41,7 @@ static void handle_backspace(char *input, int *cursor_pos,
     }
 }
 
-static void handle_delete(char *input, int *cursor_pos, int *input_length)
+void handle_delete(char *input, int *cursor_pos, int *input_length)
 {
     if (*cursor_pos < *input_length) {
         memmove(input + (*cursor_pos),

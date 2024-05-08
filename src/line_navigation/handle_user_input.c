@@ -20,7 +20,7 @@ int input_not_empty(char *user_input)
     return 0;
 }
 
-static int process_user_input(input_t *input_data)
+int process_user_input(input_t *input_data)
 {
     char *input = input_data->input;
     history_t *hist = input_data->hist;
