@@ -5,7 +5,6 @@
 ** globbing.c
 */
 
-#include "my.h"
 #include "globbing.h"
 
 size_t nbr_wdr(const char *str)

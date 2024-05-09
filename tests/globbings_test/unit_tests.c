@@ -1,7 +1,6 @@
 #include <criterion/criterion.h>
 #include <criterion/redirect.h>
 #include "globbing.h"
-#include "my.h"
 
 void redirect_all_std(void)
 {

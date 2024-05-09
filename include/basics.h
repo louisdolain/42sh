@@ -44,4 +44,5 @@ char *cleanstr(char *str);
 void overwrite_file(char *filepath, char *string);
 void appendwrite_file(char *filepath, char *string);
 char *open_file(char *filepath);
+
 #endif
