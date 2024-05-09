@@ -42,7 +42,7 @@ char **my_str_to_all_array(char *str, char *separators)
     char *entity = NULL;
     char **array = NULL;
 
-    for (str = str; *str != '\0'; str++) {
+    for (; *str != '\0'; str++) {
         word_len = get_word_len(str, separators);
         if (word_len != 0) {
             entity = malloc(sizeof(char) * (word_len + 1));

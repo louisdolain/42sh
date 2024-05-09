@@ -114,7 +114,7 @@ int process_command(char *command, char ***env)
     restore_quotes(&parsed_input);
     paths = get_fct_paths(bin_path_list, parsed_input[0]);
     if (contains_globbing_pattern(command)) {
-        handle_globbing(command, parsed_input, paths, env);
+        handle_globbing(&parsed_input, paths, env);
         return 0;
     }
     free_str_array(bin_path_list);

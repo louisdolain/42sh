@@ -31,8 +31,17 @@ SRC =	$(SRC_FOLDER)tools/tools.c \
 		$(SRC_FOLDER)process/process_operators.c \
 		$(SRC_FOLDER)parsing/parse_token_redirections.c \
 		$(SRC_FOLDER)backticks/backticks.c \
-		$(SRC_FOLDER)globbing.c \
-		$(wildcard src/history/*.c)
+		$(SRC_FOLDER)globbings/globbing.c \
+		$(SRC_FOLDER)globbings/exec_globbings.c \
+		$(SRC_FOLDER)history/clear.c \
+		$(SRC_FOLDER)history/find.c \
+		$(SRC_FOLDER)history/get_previous_cmd.c \
+		$(SRC_FOLDER)history/get_time.c \
+		$(SRC_FOLDER)history/handle_history.c \
+		$(SRC_FOLDER)history/len_list.c \
+		$(SRC_FOLDER)history/my_history.c \
+		$(SRC_FOLDER)history/save_history.c \
+		$(SRC_FOLDER)history/show_history.c
 
 SRC_BASIC =	$(LIB_BASIC_FOLDER)my_printf.c \
 		$(LIB_BASIC_FOLDER)my_printf2.c \
@@ -56,16 +65,11 @@ SRC_BASIC =	$(LIB_BASIC_FOLDER)my_printf.c \
 		$(LIB_BASIC_FOLDER)number.c
 
 SRC_TEST = $(SRC_FOLDER)parsing/*.c \
-		$(SRC_FOLDER)backticks/*.c \
-		$(SRC_FOLDER)bulletins/*.c \
-		$(SRC_FOLDER)error/*.c \
 		$(SRC_FOLDER)history/*.c \
-		$(SRC_FOLDER)process/*.c \
-		$(SRC_FOLDER)tools/*.c \
-		$(SRC_FOLDER)globbing.c \
+		$(SRC_FOLDER)globbings/globbing.c \
 		$(TEST_FOLDER)parsing/parser.c \
-		$(TEST_FOLDER)globbings_test/unit_tests.c \
-		$(TEST_FOLDER)history.c
+		$(TEST_FOLDER)history/history.c \
+		$(TEST_FOLDER)globbings_test/unit_tests.c
 
 
 OBJ_MAIN = $(MAIN:.c=.o)

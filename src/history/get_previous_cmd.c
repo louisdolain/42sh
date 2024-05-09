@@ -45,5 +45,6 @@ void exclamation_mark(history_t **list, char *command, char ***input)
         printf("pb de malloc\n");
         return;
     }
+    history_add(list, temp);
     replace_array(input, new_input);
 }
