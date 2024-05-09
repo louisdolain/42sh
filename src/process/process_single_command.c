@@ -123,7 +123,7 @@ static int handle_globbing(char ***parsed_input,
         globfree(&globbuf);
         return -1;
     }
-    check_glob((*parsed_input), globbuf, i);
+    check_glob((*parsed_input), &globbuf, i);
     return exec_cmd(&globbuf.gl_pathv, paths, env);
 }
 
@@ -139,8 +139,8 @@ int process_command(char *command, char ***env)
     restore_quotes(&parsed_input);
     paths = get_fct_paths(bin_path_list, parsed_input[0]);
     if (contains_globbing_pattern(command)) {
-        handle_globbing(&parsed_input, paths, env);
-        return 0;
+        free_str_array(bin_path_list);
+        return handle_globbing(&parsed_input, paths, env);
     }
     free_str_array(bin_path_list);
     return exec_cmd(&parsed_input, paths, env);
