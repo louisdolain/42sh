@@ -6,6 +6,7 @@
 */
 
 #include "my.h"
+extern history_t *list;
 
 char **get_bin_path_list(char **env)
 {
@@ -26,6 +27,7 @@ void free_mysh(char *user_input, char ***env)
 {
     free(user_input);
     free_str_array(*env);
+    free_list(&list);
 }
 
 void free_process(char ***parsed_input, char **paths)

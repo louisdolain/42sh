@@ -18,3 +18,4 @@ int open_token_double_output_redirections(token_t *token,
 int open_token_input_redirections(token_t *token, int *saved_in);
 int open_token_output_redirections(token_t *token, int *saved_out);
 void close_token_redirections(token_t *token, int saved_in, int saved_out);
+int exec_cmd(char ***parsed_input, char **paths, char ***env);

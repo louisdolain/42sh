@@ -7,6 +7,7 @@
 
 #include "my.h"
 #include "process.h"
+const history_t *list = NULL;
 
 static void clean_exiting_process(int status, int res,
     char ***parsed_input, char **paths)
@@ -20,8 +21,7 @@ int process_parent(pid_t pid, char ***parsed_input,
 {
     int status;
     int res;
-    static history_t *list = NULL;
-    char *temp = strdup((*parsed_input)[0]);
+    char *temp = strdup(*parsed_input[0]);
 
     waitpid(pid, &status, 0);
     res = WEXITSTATUS(status);
@@ -33,9 +33,9 @@ int process_parent(pid_t pid, char ***parsed_input,
         break;
         }
     }
-    history_add(&list, array_to_str((*parsed_input)));
-    if (strcmp((*parsed_input)[0], temp) > 0)
-        process_multiple_command(array_to_str((*parsed_input)), env);
+    if (strcmp(*parsed_input[0], temp) > 0)
+        process_multiple_command(array_to_str(*parsed_input), env);
+    free(temp);
     clean_exiting_process(status, res, parsed_input, paths);
     return res;
 }
@@ -103,6 +103,30 @@ int exec_cmd(char ***parsed_input,
     return 0;
 }
 
+static int handle_globbing(char ***parsed_input,
+    char **paths, char ***env)
+{
+    glob_t globbuf;
+    int i = 0;
+    int num_args = 0;
+
+    num_args = count_arguments(parsed_input, num_args);
+    if (num_args == 1)
+        return -1;
+    globbuf.gl_offs = 1;
+    while ((*parsed_input)[i]) {
+        glob((*parsed_input)[i], GLOB_DOOFFS |
+            (i == 0 ? 0 : GLOB_APPEND), NULL, &globbuf);
+        i++;
+    }
+    if (globbuf.gl_pathc == 0) {
+        globfree(&globbuf);
+        return -1;
+    }
+    check_glob((*parsed_input), globbuf, i);
+    return exec_cmd(&globbuf.gl_pathv, paths, env);
+}
+
 int process_command(char *command, char ***env)
 {
     char **bin_path_list = get_bin_path_list(*env);
@@ -115,7 +139,7 @@ int process_command(char *command, char ***env)
     restore_quotes(&parsed_input);
     paths = get_fct_paths(bin_path_list, parsed_input[0]);
     if (contains_globbing_pattern(command)) {
-        handle_globbing(command, parsed_input, paths, env);
+        handle_globbing(&parsed_input, paths, env);
         return 0;
     }
     free_str_array(bin_path_list);

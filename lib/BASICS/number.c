@@ -5,7 +5,7 @@
 ** is_number
 */
 
-#include "my.h"
+#include "history.h"
 
 int is_number(char *str)
 {

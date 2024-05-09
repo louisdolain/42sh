@@ -10,41 +10,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-
-static char *find_by_command_prefix(history_t **list, char *command)
-{
-    history_t *current = *list;
-
-    while (current != NULL) {
-        if (strncmp(current->cmd, command, strlen(command)) == 0)
-            return current->cmd;
-        current = current->next;
-    }
-    return NULL;
-}
-
-static char *find_by_command_number(history_t **list, int number)
-{
-    history_t *current = *list;
-    int idx = 1;
-
-    while (current != NULL) {
-        if (idx == number)
-            return current->cmd;
-        idx++;
-        current = current->next;
-    }
-    return NULL;
-}
-
-char *find(history_t **list, char *command)
-{
-    ++command;
-    if (contain_number(command) == 1)
-        return find_by_command_number(list, atoi(command));
-    else
-        return find_by_command_prefix(list, command);
-}
+#include "basics.h"
 
 void replace_array(char ***old_array, char **new_array)
 {
@@ -80,5 +46,6 @@ void exclamation_mark(history_t **list, char *command, char ***input)
         printf("pb de malloc\n");
         return;
     }
+    history_add(list, temp);
     replace_array(input, new_input);
 }

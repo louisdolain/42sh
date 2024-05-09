@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-#include "bulletin.h"
+#include "history.h"
 
 void process_history(char ***parsed_input, char ***, int *, history_t **list)
 {

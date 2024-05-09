@@ -93,9 +93,9 @@ void process_variable(char ***parsed_input, char ***env,
         return;
     }
     if (my_strcmp((*parsed_input)[0], "echo") == 0) {
-        if (my_strcmp((*parsed_input)[1], "$TERM") == 0)
+        if (my_strcmp((*parsed_input)[1], "$term") == 0)
             return print_term(env);
-        if (my_strcmp((*parsed_input)[1], "$CWD") == 0)
+        if (my_strcmp((*parsed_input)[1], "$cwd") == 0)
             return print_cwd();
         temp = find_local(&var, (*parsed_input)[1]);
         if (temp != NULL)

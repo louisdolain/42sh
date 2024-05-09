@@ -7,6 +7,21 @@
 
 #include "my.h"
 #include "process.h"
+extern history_t *list;
+
+static int contain(char *src, char c)
+{
+    for (int i = 0; src[i] != '\0'; i++)
+        if (src[i] == c)
+            return 0;
+    return 84;
+}
+
+static void handle_add(char *user_input)
+{
+    if (contain(user_input, '!') == 84)
+        history_add(&list, user_input);
+}
 
 int input_not_empty(char *user_input)
 {
@@ -55,6 +70,7 @@ int mysh(char ***env)
         if (my_exit(user_input, &exit))
             break;
         fill_env(env);
+        handle_add(user_input);
         exit = process_multiple_command(user_input, env);
         free(user_input);
         user_input = NULL;
