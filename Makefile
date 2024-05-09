@@ -24,13 +24,13 @@ SRC =	$(SRC_FOLDER)tools/tools.c \
 		$(SRC_FOLDER)error/cd_errors.c \
 		$(SRC_FOLDER)bulletins/exit.c \
 		$(SRC_FOLDER)error/execve_errors.c \
+		$(SRC_FOLDER)error/parantheses_error.c \
 		$(SRC_FOLDER)parsing/remove_parentheses.c \
 		$(SRC_FOLDER)parsing/ll_parser.c \
 		$(SRC_FOLDER)parsing/destroy.c \
 		$(SRC_FOLDER)process/process_operators.c \
 		$(SRC_FOLDER)parsing/parse_token_redirections.c \
 		$(SRC_FOLDER)backticks/backticks.c \
-		$(SRC_FOLDER)error/parantheses_error.c \
 		$(SRC_FOLDER)line_navigation/handle_user_input.c \
 		$(SRC_FOLDER)line_navigation/handle_keys.c \
 		$(SRC_FOLDER)line_navigation/print.c \
@@ -40,6 +40,15 @@ SRC =	$(SRC_FOLDER)tools/tools.c \
                 $(SRC_FOLDER)line_navigation/terminal_setup.c \
 		$(SRC_FOLDER)globbings/globbing.c \
 		$(SRC_FOLDER)globbings/exec_globbings.c \
+		$(SRC_FOLDER)history/clear.c \
+		$(SRC_FOLDER)history/find.c \
+		$(SRC_FOLDER)history/get_previous_cmd.c \
+		$(SRC_FOLDER)history/get_time.c \
+		$(SRC_FOLDER)history/handle_history.c \
+		$(SRC_FOLDER)history/len_list.c \
+		$(SRC_FOLDER)history/my_history.c \
+		$(SRC_FOLDER)history/save_history.c \
+		$(SRC_FOLDER)history/show_history.c
 
 SRC_BASIC =	$(LIB_BASIC_FOLDER)my_printf.c \
 		$(LIB_BASIC_FOLDER)my_printf2.c \
@@ -59,10 +68,19 @@ SRC_BASIC =	$(LIB_BASIC_FOLDER)my_printf.c \
 		$(LIB_BASIC_FOLDER)my_strdup_array.c \
 		$(LIB_BASIC_FOLDER)append.c \
 		$(LIB_BASIC_FOLDER)cleanstr.c \
-		$(LIB_BASIC_FOLDER)open_file.c
+		$(LIB_BASIC_FOLDER)open_file.c	\
+		$(LIB_BASIC_FOLDER)number.c
 
 SRC_TEST = $(SRC_FOLDER)parsing/*.c \
 		$(SRC_FOLDER)globbings/globbing.c \
+		$(SRC_FOLDER)history/clear.c \
+        $(SRC_FOLDER)history/find.c \
+        $(SRC_FOLDER)history/my_history.c \
+        $(SRC_FOLDER)history/get_time.c \
+        $(SRC_FOLDER)history/get_previous_cmd.c \
+        $(SRC_FOLDER)history/len_list.c \
+        $(SRC_FOLDER)history/save_history.c \
+        $(SRC_FOLDER)history/show_history.c \
 		$(TEST_FOLDER)parsing/parser.c \
 	   $(SRC_FOLDER)line_navigation/*.c \
 		$(TEST_FOLDER)line_navigation/test_chars.c \
@@ -71,7 +89,9 @@ SRC_TEST = $(SRC_FOLDER)parsing/*.c \
                 $(TEST_FOLDER)line_navigation/test_delete.c \
                 $(TEST_FOLDER)line_navigation/test_arrows.c \
                 $(TEST_FOLDER)line_navigation/test_history.c \
+		$(TEST_FOLDER)history/history.c \
 		$(TEST_FOLDER)globbings_test/unit_tests.c
+
 
 OBJ_MAIN = $(MAIN:.c=.o)
 OBJ_SRC = $(SRC:.c=.o)
@@ -116,7 +136,8 @@ fclean: clean
 
 tests_run: clean build_lib
 	$(CC) -o $(TEST_NAME) $(SRC_TEST) $(LDFLAGS) $(LIBFLAGS) \
-	$(CRITFLAGS) $(COVERFLAGS) $(CPPFLAGS)
+	-I/opt/homebrew/include \
+	-L/opt/homebrew/lib $(CRITFLAGS) $(COVERFLAGS) $(CPPFLAGS)
 	./$(TEST_NAME)
 
 re: fclean all

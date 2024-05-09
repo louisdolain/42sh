@@ -12,7 +12,7 @@
 
     #include <termios.h>
 
-typedef struct history_s {
+typedef struct line_history_s {
     char *history[MAX_HISTORY_SIZE];
     int history_size;
     int current_history_index;
