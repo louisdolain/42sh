@@ -35,6 +35,7 @@ int process_parent(pid_t pid, char ***parsed_input,
     }
     if (strcmp(*parsed_input[0], temp) > 0)
         process_multiple_command(array_to_str(*parsed_input), env);
+    free(temp);
     clean_exiting_process(status, res, parsed_input, paths);
     return res;
 }
