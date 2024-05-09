@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
+#include "basics.h"
 
 void replace_array(char ***old_array, char **new_array)
 {

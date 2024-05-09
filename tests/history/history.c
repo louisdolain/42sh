@@ -53,7 +53,15 @@ Test(free_array_test, Test3) {
     array[2] = NULL;
     char **result = free_array(array);
     cr_assert_null(result);
+    result = free_array(NULL);
+    cr_assert_null(result);
+    char **short_array = malloc(2 * sizeof(char*));
+    short_array[0] = strdup("test");
+    short_array[1] = NULL;
+    result = free_array(short_array);
+    cr_assert_null(result);
 }
+
 
 Test(find_by_command_prefix_test, Test4) {
     history_t *history1 = malloc(sizeof(history_t));
@@ -67,6 +75,8 @@ Test(find_by_command_prefix_test, Test4) {
     history1->next = history2;
     char *result = find_by_command_prefix(&history1, "ls");
     cr_assert_str_eq(result, "ls -l");
+    result = find_by_command_prefix(&history1, "apagnan");
+    cr_assert_null(result);
 }
 
 Test(find_by_command_number_test, Test5) {
@@ -81,6 +91,8 @@ Test(find_by_command_number_test, Test5) {
     history1->next = history2;
     char *result = find_by_command_number(&history1, 1);
     cr_assert_str_eq(result, "ls -l");
+    result = find_by_command_number(&history1, 20);
+    cr_assert_null(result);
 }
 
 Test(find_test, Test5) {

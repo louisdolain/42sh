@@ -102,6 +102,30 @@ int exec_cmd(char ***parsed_input,
     return 0;
 }
 
+static int handle_globbing(char ***parsed_input,
+    char **paths, char ***env)
+{
+    glob_t globbuf;
+    int i = 0;
+    int num_args = 0;
+
+    num_args = count_arguments(parsed_input, num_args);
+    if (num_args == 1)
+        return -1;
+    globbuf.gl_offs = 1;
+    while ((*parsed_input)[i]) {
+        glob((*parsed_input)[i], GLOB_DOOFFS |
+            (i == 0 ? 0 : GLOB_APPEND), NULL, &globbuf);
+        i++;
+    }
+    if (globbuf.gl_pathc == 0) {
+        globfree(&globbuf);
+        return -1;
+    }
+    check_glob((*parsed_input), globbuf, i);
+    return exec_cmd(&globbuf.gl_pathv, paths, env);
+}
+
 int process_command(char *command, char ***env)
 {
     char **bin_path_list = get_bin_path_list(*env);

@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
+#include "basics.h"
 
 char **list_to_array(history_t **list)
 {

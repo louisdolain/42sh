@@ -7,7 +7,7 @@
 
 #include <string.h>
 #include "history.h"
-#include "basics.h"
+#include <stdlib.h>
 
 char *find_by_command_prefix(history_t **list, char *command)
 {

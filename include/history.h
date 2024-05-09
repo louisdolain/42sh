@@ -5,9 +5,6 @@
 ** history
 */
 
-#include "basics.h"
-
-
 #ifndef HISTORY_H_
     #define HISTORY_H_
 
@@ -20,6 +17,8 @@ typedef struct history_s {
 } history_t;
 
 // history
+int contain_number(const char *str);
+int is_number(char *str);
 void free_list(history_t **list);
 void print_array(char **array, char *str);
 int len_list(history_t *list);
