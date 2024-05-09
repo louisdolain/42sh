@@ -16,13 +16,13 @@ typedef struct history_s {
     char *history[MAX_HISTORY_SIZE];
     int history_size;
     int current_history_index;
-} history_t;
+} line_history_t;
 
 typedef struct input_s {
     char *input;
     int *cursor_pos;
     int *input_length;
-    history_t *hist;
+    line_history_t *hist;
     char c;
 } input_t;
 
@@ -40,7 +40,7 @@ void print_input(char *input, int cursor_pos, int input_length);
 
 //handle_user_input.c
 int handle_user_input_loop(char *input, int *cursor_pos,
-    int *input_length, history_t *hist);
+    int *input_length, line_history_t *hist);
 int input_not_empty(char *user_input);
 int process_user_input(input_t *input_data);
 
@@ -48,9 +48,9 @@ int process_user_input(input_t *input_data);
 void set_terminal_mode(struct termios *old_rules, struct termios *new_rules);
 
 //up_down_arrows.c
-history_t *initialize_history(void);
-void cleanup_history(history_t *hist);
-void add_to_history(history_t *hist, const char *input);
+line_history_t *initialize_history(void);
+void cleanup_history(line_history_t *hist);
+void add_to_history(line_history_t *hist, const char *input);
 void handle_down_arrow(input_t *input_data);
 void handle_up_arrow(input_t *input_data);
 

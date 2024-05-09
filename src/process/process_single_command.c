@@ -94,6 +94,8 @@ int process_command(char *command, char ***env)
     handle_quotes(command);
     parsed_input = my_str_to_all_array(command, " \t");
     restore_quotes(parsed_input);
+    if (my_strcmp(parsed_input[0], "ls") == 0)
+        put_color_ls(&parsed_input);
     paths = get_fct_paths(bin_path_list, parsed_input[0]);
     if (contains_globbing_pattern(command)) {
         handle_globbing(parsed_input, paths, env);

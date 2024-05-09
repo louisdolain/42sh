@@ -23,7 +23,7 @@ int input_not_empty(char *user_input)
 int process_user_input(input_t *input_data)
 {
     char *input = input_data->input;
-    history_t *hist = input_data->hist;
+    line_history_t *hist = input_data->hist;
     char c = input_data->c;
 
     if (c == '\n') {
@@ -37,7 +37,7 @@ int process_user_input(input_t *input_data)
 }
 
 int handle_user_input_loop(char *input, int *cursor_pos,
-    int *input_length, history_t *hist)
+    int *input_length, line_history_t *hist)
 {
     char c;
     input_t input_data;

@@ -9,7 +9,7 @@
 #include "navigation.h"
 #include <termios.h>
 
-int get_user_input(char **user_input, history_t *hist)
+int get_user_input(char **user_input, line_history_t *hist)
 {
     struct termios old_rules;
     struct termios new_rules;
@@ -34,7 +34,7 @@ int mysh(char ***env)
 {
     char *user_input = NULL;
     int exit = 0;
-    history_t *hist = initialize_history();
+    line_history_t *hist = initialize_history();
 
     while (get_user_input(&user_input, hist) != EOF) {
         if (!input_not_empty(user_input))
