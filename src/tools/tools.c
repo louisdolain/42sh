@@ -6,6 +6,8 @@
 */
 
 #include "my.h"
+#include "basics.h"
+
 extern history_t *list;
 
 char **get_bin_path_list(char **env)

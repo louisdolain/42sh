@@ -9,73 +9,15 @@
 #include "basics.h"
 #include "my.h"
 #include "variables.h"
+#include <stdio.h>
+#include <stdarg.h>
 
-static void print_term(char ***env)
+void my_echo(const char *format, ...)
 {
-    char *temp = my_getenv(*env, "TERM") + 5;
-
-    if (!temp)
-        return;
-    printf("%s\n", temp);
-    return;
-}
-
-static void print_cwd(void)
-{
-    char *pwd = malloc(sizeof(char) * 2048);
-
-    getcwd(pwd, 2048);
-    printf("%s\n", pwd);
-    free(pwd);
-}
-
-static void add_local(variable_t **list, char ***parsed_input)
-{
-    variable_t *new = malloc(sizeof(variable_t));
-
-    if (!new) {
-        return;
-    }
-    if (strcmp((*parsed_input)[2], "=") != 0 ||
-        my_strlen_array((*parsed_input)) != 4) {
-        free(new);
-        return;
-    }
-    new->first = strdup((*parsed_input)[1]);
-    new->second = strdup((*parsed_input)[3]);
-    new->next = *list;
-    *list = new;
-}
-
-static void remove_local(variable_t **list, char *parsed_input)
-{
-    variable_t *current = *list;
-    variable_t *next;
-
-    while (current != NULL) {
-        next = current->next;
-        if (strcmp(current->first, parsed_input) == 0) {
-            free(current->first);
-            free(current->second);
-            free(current);
-            *list = next;
-            return;
-        }
-        current = next;
-    }
-}
-
-static char *find_local(variable_t **list, char *command)
-{
-    variable_t *current = *list;
-
-    ++command;
-    while (current != NULL) {
-        if (strcmp(current->first, command) == 0)
-            return current->second;
-        current = current->next;
-    }
-    return NULL;
+    va_list args;
+    va_start(args, format);
+    vprintf(format, args);
+    va_end(args);
 }
 
 void process_variable(char ***parsed_input, char ***env,
@@ -100,5 +42,10 @@ void process_variable(char ***parsed_input, char ***env,
         temp = find_local(&var, (*parsed_input)[1]);
         if (temp != NULL)
             printf("%s\n", temp);
+        else {
+            char *temp = array_to_str((*parsed_input));
+            printf("%s", temp);
+            exit;
+        }
     }
 }

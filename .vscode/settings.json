@@ -1,5 +1,11 @@
 {
     "files.associations": {
-        "my.h": "c"
+        "my.h": "c",
+        "variables.h": "c",
+        "bulletin.h": "c",
+        "stdio.h": "c",
+        "stdlib.h": "c",
+        "basics.h": "c",
+        "unistd.h": "c"
     }
 }
