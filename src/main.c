@@ -9,14 +9,15 @@
 #include "process.h"
 extern history_t *list;
 
-static int contain(char *src, char c){
+static int contain(char *src, char c)
+{
     for (int i = 0; src[i] != '\0'; i++)
         if (src[i] == c)
             return 0;
     return 84;
 }
 
-static void handle_add(char *user_input) 
+static void handle_add(char *user_input)
 {
     if (contain(user_input, '!') == 84)
         history_add(&list, user_input);

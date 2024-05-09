@@ -114,7 +114,8 @@ fclean: clean
 	$(RM) $(LIBNAME)
 
 tests_run: clean build_lib
-	$(CC) -o $(TEST_NAME) $(SRC_TEST) $(LDFLAGS) $(LIBFLAGS) -I/opt/homebrew/include \
+	$(CC) -o $(TEST_NAME) $(SRC_TEST) $(LDFLAGS) $(LIBFLAGS) \
+	-I/opt/homebrew/include \
 	-L/opt/homebrew/lib $(CRITFLAGS) $(COVERFLAGS) $(CPPFLAGS)
 	./$(TEST_NAME)
 
