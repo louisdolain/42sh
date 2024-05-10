@@ -36,17 +36,17 @@ int str_is_alpha(char *str)
     return 1;
 }
 
-int setenv_error(char **parsed_input)
+int setenv_error(char ***parsed_input)
 {
     char *msg = "setenv: Variable name must begin with a letter.\n";
     char *msg2 =
         "setenv: Variable name must contain alphanumeric characters.\n";
 
-    if (!char_is_letter(parsed_input[1][0])) {
+    if (!char_is_letter((*parsed_input)[1][0])) {
         write(2, msg, 48);
         return 1;
     }
-    if (!str_is_alpha(parsed_input[1])) {
+    if (!str_is_alpha((*parsed_input)[1])) {
         write(2, msg2, 60);
         return 1;
     }

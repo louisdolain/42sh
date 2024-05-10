@@ -5,11 +5,12 @@
 ** ll_parser
 */
 
-#include "my.h"
 #include "string.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
+#include <stdbool.h>
+#include "parsing.h"
 
 static bool is_on_separator(char *content_ptr, char **separators)
 {

@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include "basics.h"
+
 typedef enum fd_state_e {
     INPUT_REDIRECTION = -2,
     OUTPUT_REDIRECTION = -3,
