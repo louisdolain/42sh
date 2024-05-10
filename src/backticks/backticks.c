@@ -79,6 +79,15 @@ static int parse_backticks(char **user_input, char **new_str, int *len_cmd)
     return 0;
 }
 
+bool exit_loop(char **user_input, int len_cmd)
+{
+    for (int j = 0; j < len_cmd + 1 && **user_input; ++j)
+        (*user_input)++;
+    if (**user_input == '\0')
+        return true;
+    return false;
+}
+
 char *handle_backticks(char *user_input, config_t *config)
 {
     char *new_str = calloc(1, sizeof(char));
@@ -94,7 +103,8 @@ char *handle_backticks(char *user_input, config_t *config)
             realloc(new_str, strlen(new_str) + strlen(command_result) + 1);
         strcat(new_str, command_result);
         free(command_result);
-        user_input += len_cmd + 1;
+        if (exit_loop(&user_input, len_cmd))
+            break;
     }
     for (int i = 0; new_str[i]; i++)
         new_str[i] = (new_str[i] == '\n' ? ' ' : new_str[i]);
