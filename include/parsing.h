@@ -33,4 +33,3 @@ void remove_outer_parentheses(char *content_ptr);
 token_t *ll_parser(token_t *head);
 int redirect_tokens(token_t *token);
 void parse_token_redirections(token_t *token);
-int process_operators(token_t *token, char ***env);

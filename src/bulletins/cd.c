@@ -61,7 +61,7 @@ void process_basic_cd(char ***parsed_input, char ***env, int *res)
     }
 }
 
-void process_cd(char ***parsed_input, char ***env, int *res, history_t **)
+void process_cd(char ***parsed_input, config_t *config, int *res, history_t **)
 {
     int len = my_strlen_array((*parsed_input));
 
@@ -69,12 +69,12 @@ void process_cd(char ***parsed_input, char ***env, int *res, history_t **)
         len > 1 &&
         my_strcmp((*parsed_input)[1], "~") != 0 &&
         my_strcmp((*parsed_input)[1], "-") != 0) {
-        process_basic_cd(parsed_input, env, res);
+        process_basic_cd(parsed_input, &config->env, res);
     }
     if (my_strcmp((*parsed_input)[0], "cd") == 0 &&
         ((*parsed_input)[1] == NULL ||
         my_strcmp((*parsed_input)[1], "~") == 0 ||
         my_strcmp((*parsed_input)[1], "-") == 0)) {
-        process_cd_home(parsed_input, env, res);
+        process_cd_home(parsed_input, &config->env, res);
     }
 }
