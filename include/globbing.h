@@ -11,7 +11,6 @@
 #include <string.h>
 
 size_t nbr_wdr(const char *str);
-int handle_globbing(char **parsed_input, char **paths, char ***env);
+int count_arguments(char ***parsed_input, int num_args);
 int contains_globbing_pattern(const char *str);
-int check_glob(char **parsed_input, glob_t globbuf, int i);
-int exec_cmd(char **parsed_input, char **paths, char ***env);
+int check_glob(char **parsed_input, glob_t *globbuf, int i);

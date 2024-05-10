@@ -83,5 +83,13 @@ commands=(
     $'((ls -l ; cat < Makefile; echo Hello) | cat -e ; cat Makefile) | grep lib ; cat src/main.c'
     $'rm -rf gros ; ((ls -l | cat -e) ; mkdir gros ; (ls -l | grep gros) ; rm -rf gros)'
     $'rm -rf file filetotest'
+    $'echo f*'
+    $'echo *.c'
+    $'echo [a-z]*'
+    $'echo ???.c'
+    $'echo file[abc].txt'
+    $'echo file[!abc].txt'
+    $'ls *.c'
+    $'rm *.o'
 )
 generate_tests "${commands[@]}"
