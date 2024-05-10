@@ -57,18 +57,6 @@ static const bulletins_t BULLETIN_ARRAY[] = {
         .function = process_history
     },
     {
-        .bulletin = "echo",
-        .function = process_variable
-    },
-    {
-        .bulletin = "set",
-        .function = process_variable
-    },
-    {
-        .bulletin = "unset",
-        .function = process_variable
-    },
-    {
         .bulletin = NULL
     }
 };

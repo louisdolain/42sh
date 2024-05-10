@@ -8,6 +8,76 @@
 #include "my.h"
 #include "process.h"
 const history_t *list = NULL;
+#include "variables.h"
+
+static int char_checker(char *parsed_input, char c)
+{
+    for (int i = 0; parsed_input[i] != '\0'; i++)
+        if (parsed_input[i] == c)
+            return 0;
+    return 84;
+}
+
+static char *search_local_variable(variable_t **var, char *input)
+{
+    char *result = find_local(var, input);
+
+    if (result != NULL) {
+        return strdup(result);
+    } else {
+        return strdup(input);
+    }
+}
+
+static char *replace_variable(char *input, variable_t **var, char ***env)
+{
+    char *result = NULL;
+
+    if (strcmp(input, "$term") == 0) {
+        result = strdup(my_term(env));
+    } else if (strcmp(input, "$cwd") == 0) {
+        result = strdup(my_cwd());
+    } else {
+        result = search_local_variable(var, input);
+    }
+    return result;
+}
+
+static void replace_variables_in_array(char ***parsed_input,
+    variable_t **var, char ***env)
+{
+    int len = my_arraylen((void **)*parsed_input);
+    char **new_array = malloc(sizeof(char *) * (len + 1));
+
+    for (int i = 0; (*parsed_input)[i] != NULL; i++)
+        new_array[i] = replace_variable((*parsed_input)[i], var, env);
+    new_array[my_arraylen((void **)new_array)] = NULL;
+    free(*parsed_input);
+    *parsed_input = new_array;
+}
+
+static int contain_local_call(char ***parsed_input, char ***env)
+{
+    static variable_t *var = NULL;
+
+    for (int i = 0; (*parsed_input)[i] != NULL; i++) {
+        if (char_checker((*parsed_input)[i], '$') == 0)
+            replace_variable(parsed_input, &var, env);
+        if (strstr((*parsed_input)[i], "set") != NULL &&
+            strstr((*parsed_input)[i], "unset") == NULL &&
+            strstr((*parsed_input)[i], "setenv") == NULL &&
+            strstr((*parsed_input)[i], "unsetenv") == NULL) {
+            add_local(&var, parsed_input);
+        }
+        if (strstr((*parsed_input)[i], "unset") != NULL &&
+            strstr((*parsed_input)[i], "set") == NULL &&
+            strstr((*parsed_input)[i], "setenv") == NULL &&
+            strstr((*parsed_input)[i], "unsetenv") == NULL) {
+            remove_local(&var, (*parsed_input)[i]);
+        }
+    }
+    return 0;
+}
 
 static void clean_exiting_process(int status, int res,
     char ***parsed_input, char **paths)
@@ -16,7 +86,7 @@ static void clean_exiting_process(int status, int res,
     free_process(parsed_input, paths);
 }
 
-int process_parent(pid_t pid, char ***parsed_input,
+static int process_parent(pid_t pid, char ***parsed_input,
     char **paths, char ***env)
 {
     int status;
@@ -56,7 +126,7 @@ int process_child(char ***parsed_input, char **paths, char ***env)
     exit(1);
 }
 
-void handle_quotes(char *command)
+static void handle_quotes(char *command)
 {
     bool in_quote = false;
 
@@ -90,7 +160,7 @@ static void restore_quotes(char ***parsed_input)
     }
 }
 
-int exec_cmd(char ***parsed_input,
+static int exec_cmd(char ***parsed_input,
     char **paths, char ***env)
 {
     pid_t pid;
@@ -138,6 +208,7 @@ int process_command(char *command, char ***env)
     parsed_input = my_str_to_all_array(command, " \t");
     restore_quotes(&parsed_input);
     paths = get_fct_paths(bin_path_list, parsed_input[0]);
+    contain_local_call(&parsed_input, env);
     if (contains_globbing_pattern(command)) {
         handle_globbing(&parsed_input, paths, env);
         return 0;
