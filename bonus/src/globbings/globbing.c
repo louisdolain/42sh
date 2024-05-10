@@ -29,8 +29,6 @@ size_t nbr_wdr(const char *str)
 
 int contains_globbing_pattern(const char *str)
 {
-    if ((strstr(str, "find") != NULL))
-        return 0;
     return strchr(str, '*') != NULL || strchr(str, '?') != NULL
         || strchr(str, '[') != NULL;
 }

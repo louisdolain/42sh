@@ -31,6 +31,13 @@ SRC =	$(SRC_FOLDER)tools/tools.c \
 		$(SRC_FOLDER)process/process_operators.c \
 		$(SRC_FOLDER)parsing/parse_token_redirections.c \
 		$(SRC_FOLDER)backticks/backticks.c \
+		$(SRC_FOLDER)line_navigation/handle_user_input.c \
+		$(SRC_FOLDER)line_navigation/handle_keys.c \
+		$(SRC_FOLDER)line_navigation/print.c \
+                $(SRC_FOLDER)line_navigation/left_right_arrows.c \
+                $(SRC_FOLDER)line_navigation/handle_arrow_keys.c \
+                $(SRC_FOLDER)line_navigation/up_down_arrows.c \
+                $(SRC_FOLDER)line_navigation/terminal_setup.c \
 		$(SRC_FOLDER)globbings/globbing.c \
 		$(SRC_FOLDER)globbings/exec_globbings.c \
 		$(SRC_FOLDER)history/clear.c \
@@ -75,6 +82,13 @@ SRC_TEST = $(SRC_FOLDER)parsing/*.c \
         $(SRC_FOLDER)history/save_history.c \
         $(SRC_FOLDER)history/show_history.c \
 		$(TEST_FOLDER)parsing/parser.c \
+	   $(SRC_FOLDER)line_navigation/*.c \
+		$(TEST_FOLDER)line_navigation/test_chars.c \
+		$(TEST_FOLDER)line_navigation/test_valid_input.c \
+		$(TEST_FOLDER)line_navigation/test_backspace.c \
+                $(TEST_FOLDER)line_navigation/test_delete.c \
+                $(TEST_FOLDER)line_navigation/test_arrows.c \
+                $(TEST_FOLDER)line_navigation/test_history.c \
 		$(TEST_FOLDER)history/history.c \
 		$(TEST_FOLDER)globbings_test/unit_tests.c
 

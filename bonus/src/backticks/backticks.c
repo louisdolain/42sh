@@ -29,7 +29,7 @@ static int get_len_cmd(char *user_input)
     return len;
 }
 
-static void execute_command(int fd, char *command,
+static void execute_command(int pipefd[2], char *command,
     char ***env, int saved_stdout)
 {
     token_t *token = calloc(1, sizeof(token_t));
@@ -42,7 +42,7 @@ static void execute_command(int fd, char *command,
     remove_outer_parentheses(token->content);
     ll_parser(token);
     redirect_tokens(token);
-    dup2(fd, STDOUT_FILENO);
+    dup2(pipefd[1], STDOUT_FILENO);
     recursive_compute(token, env);
     dup2(saved_stdout, STDOUT_FILENO);
     destroy_tokens(token);
@@ -50,20 +50,19 @@ static void execute_command(int fd, char *command,
 
 static char *get_command_result(char *command, char ***env)
 {
+    int pipefd[2];
     int saved_stdout = dup(STDOUT_FILENO);
-    int tempfd = open("bacticktempfile",
-        O_RDWR | O_CREAT | O_TRUNC, 0666);
-    char *content = NULL;
+    char content[2048];
+    size_t size;
 
-    execute_command(tempfd, command, env, saved_stdout);
-    close(tempfd);
-    dup2(saved_stdout, STDOUT_FILENO);
+    pipe(pipefd);
+    execute_command(pipefd, command, env, saved_stdout);
+    size = read(pipefd[0], content, 2048);
+    content[size] = '\0';
+    close(pipefd[0]);
+    close(pipefd[1]);
     close(saved_stdout);
-    content = open_file("bacticktempfile");
-    remove("bacticktempfile");
-    if (content == NULL)
-        return strdup(" ");
-    return content;
+    return strdup(content);
 }
 
 static int parse_backticks(char **user_input, char **new_str, int *len_cmd)

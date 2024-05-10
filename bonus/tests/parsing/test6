@@ -1,0 +1,22 @@
+ (echo 'hello je suis un test';ls ; echo Hello | cat -e) | grep lib | grep test  in: -1, out: -1
+
+--  echo 'hello je suis un test';ls ; echo Hello | cat -e   in: 0, out: 1
+
+----  echo 'hello je suis un test' in: 0, out: 1
+
+----ls ; echo Hello | cat -e   in: 0, out: 1
+
+------ls  in: 0, out: 1
+
+------ echo Hello | cat -e   in: 0, out: 1
+
+-------- echo Hello  in: 0, out: 1
+
+-------- cat -e   in: 0, out: 1
+
+-- grep lib | grep test  in: 0, out: 1
+
+---- grep lib  in: 0, out: 1
+
+---- grep test  in: 0, out: 1
+
