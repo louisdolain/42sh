@@ -27,11 +27,11 @@ int process_parent(pid_t pid, char ***parsed_input,
     waitpid(pid, &status, 0);
     res = WEXITSTATUS(status);
     for (int i = 0; BULLETIN_ARRAY[i].bulletin; i++) {
-    if (((*parsed_input)[0][0] == '!' &&
-        strncmp(BULLETIN_ARRAY[i].bulletin, "!", 1) == 0) ||
-        strcmp(BULLETIN_ARRAY[i].bulletin, (*parsed_input)[0]) == 0) {
-        BULLETIN_ARRAY[i].function(parsed_input, env, &res, &list);
-        break;
+        if (((*parsed_input)[0][0] == '!' &&
+            strncmp(BULLETIN_ARRAY[i].bulletin, "!", 1) == 0) ||
+            strcmp(BULLETIN_ARRAY[i].bulletin, (*parsed_input)[0]) == 0) {
+            BULLETIN_ARRAY[i].function(parsed_input, env, &res, &list);
+            break;
         }
     }
     if (strcmp(*parsed_input[0], temp) > 0)
