@@ -26,11 +26,11 @@ int process_parent(pid_t pid, char ***parsed_input,
     waitpid(pid, &status, 0);
     res = WEXITSTATUS(status);
     for (int i = 0; BULLETIN_ARRAY[i].bulletin; i++) {
-    if (((*parsed_input)[0][0] == '!' &&
-        strncmp(BULLETIN_ARRAY[i].bulletin, "!", 1) == 0) ||
-        strcmp(BULLETIN_ARRAY[i].bulletin, (*parsed_input)[0]) == 0) {
-        BULLETIN_ARRAY[i].function(parsed_input, env, &res, &list);
-        break;
+        if (((*parsed_input)[0][0] == '!' &&
+            strncmp(BULLETIN_ARRAY[i].bulletin, "!", 1) == 0) ||
+            strcmp(BULLETIN_ARRAY[i].bulletin, (*parsed_input)[0]) == 0) {
+            BULLETIN_ARRAY[i].function(parsed_input, env, &res, &list);
+            break;
         }
     }
     if (strcmp(*parsed_input[0], temp) > 0)
@@ -123,7 +123,7 @@ static int handle_globbing(char ***parsed_input,
         globfree(&globbuf);
         return -1;
     }
-    check_glob((*parsed_input), globbuf, i);
+    check_glob((*parsed_input), &globbuf, i);
     return exec_cmd(&globbuf.gl_pathv, paths, env);
 }
 
@@ -139,8 +139,8 @@ int process_command(char *command, char ***env)
     restore_quotes(&parsed_input);
     paths = get_fct_paths(bin_path_list, parsed_input[0]);
     if (contains_globbing_pattern(command)) {
-        handle_globbing(&parsed_input, paths, env);
-        return 0;
+        free_str_array(bin_path_list);
+        return handle_globbing(&parsed_input, paths, env);
     }
     free_str_array(bin_path_list);
     return exec_cmd(&parsed_input, paths, env);
