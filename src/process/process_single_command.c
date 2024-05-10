@@ -7,6 +7,7 @@
 
 #include "my.h"
 #include "process.h"
+#include "alias.h"
 const history_t *list = NULL;
 
 static void clean_exiting_process(int status, int res,
@@ -14,6 +15,21 @@ static void clean_exiting_process(int status, int res,
 {
     process_segfault(status, &res);
     free_process(parsed_input, paths);
+}
+
+int process_non_bulletin_cmd(pid_t pid, char ***parsed_input,
+    char **paths, char ***env)
+{
+    int status;
+    int res;
+    char *temp = strdup(*parsed_input[0]);
+    static alias_t** alias_list = NULL;
+
+    waitpid(pid, &status, 0);
+    res = WEXITSTATUS(status);
+    if (my_strcmp(temp, "alias") == 0)
+        res = process_alias(*parsed_input, &alias_list);
+    return res;
 }
 
 int process_parent(pid_t pid, char ***parsed_input,
@@ -95,12 +111,17 @@ int exec_cmd(char ***parsed_input,
     char **paths, char ***env)
 {
     pid_t pid;
+    int exit = 0;
 
     pid = fork();
     if (pid == 0) {
         process_child(parsed_input, paths, env);
     } else
-        return process_parent(pid, parsed_input, paths, env);
+        exit = process_non_bulletin_cmd(pid, parsed_input, paths, env);
+        if (exit == 99)
+            return process_parent(pid, parsed_input, paths, env);
+        process_parent(pid, parsed_input, paths, env);
+        return exit;
     return 0;
 }
 

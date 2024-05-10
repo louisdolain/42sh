@@ -8,18 +8,19 @@
 #include "my.h"
 #include "alias.h"
 
-int process_alias(char **parsed_input, alias_t *alias_list)
+int process_alias(char **parsed_input, alias_t ***alias_list)
 {
-    alias_t new_alias = {parsed_input[1], "\0"};
+    alias_t *new_alias = malloc(sizeof(alias_t));
 
-    //printf("arg 1 : %s\n", parsed_input[1]);
-    //printf("alias : %s\n", new_alias.alias);
-
-    for (int i = 0; parsed_input[i] != NULL; i++) {
-        printf("arg 1 : %s\n", parsed_input[i]);
-    }
+    if (parsed_input[1] == NULL)
+        return 0;
+    new_alias->alias = parsed_input[1];
+    printf("alias : %s\n", new_alias->alias);
     //my_strcat(new_alias.command, );
 
-    //alias_list = append(alias_list, new_alias);
+    printf("alias list : >%p<\n", *alias_list);
+    append_ptr((void ***)alias_list, new_alias, NULL);
+    for (int i = 0; alias_list != NULL && alias_list[i] != NULL; i++)
+        printf("alias n°%i : >%p<\n", i, alias_list[i]);
     return 0;
 }

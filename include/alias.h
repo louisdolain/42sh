@@ -13,4 +13,6 @@
         char *command;
     }alias_t;
 
+int process_alias(char **parsed_input, alias_t ***alias_list);
+
 #endif /* !ALIAS_H_ */

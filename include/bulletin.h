@@ -9,7 +9,6 @@
 
 #include <string.h>
 #include <fcntl.h>
-#include "alias.h"
 #include "history.h"
 #include "basics.h"
 
@@ -23,7 +22,6 @@ void process_cd(char ***parsed_input, char ***env, int *res, history_t **list);
 void process_env(char ***parsed_input,
     char ***env, int *res, history_t **list);
 void process_segfault(int status, int *res);
-int process_alias(char **parsed_input, alias_t *alias_list);
 void process_history(char ***parsed_input,
     char ***env, int *res, history_t **list);
 

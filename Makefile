@@ -41,7 +41,8 @@ SRC =	$(SRC_FOLDER)tools/tools.c \
 		$(SRC_FOLDER)history/len_list.c \
 		$(SRC_FOLDER)history/my_history.c \
 		$(SRC_FOLDER)history/save_history.c \
-		$(SRC_FOLDER)history/show_history.c
+		$(SRC_FOLDER)history/show_history.c	\
+		$(SRC_FOLDER)alias.c
 
 SRC_BASIC =	$(LIB_BASIC_FOLDER)my_printf.c \
 		$(LIB_BASIC_FOLDER)my_printf2.c \
