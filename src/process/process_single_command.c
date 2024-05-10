@@ -113,6 +113,9 @@ int exec_cmd(char ***parsed_input,
     pid_t pid;
     int exit = 0;
 
+    if (strcmp(*parsed_input[0], "alias") == 0)
+        return process_alias(*parsed_input, &config->alias_list);
+    replace_alias(*parsed_input, config->alias_list);
     pid = fork();
     if (pid == 0) {
         process_child(parsed_input, paths, config);

@@ -5,7 +5,7 @@
 ** my_print_alpha
 */
 
-#include "basics.h"
+#include "../../include/basics.h"
 
 int my_strlen(char const *str)
 {
