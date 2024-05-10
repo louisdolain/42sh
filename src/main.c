@@ -7,7 +7,6 @@
 
 #include "my.h"
 #include "process.h"
-extern history_t *list;
 
 static int contain(char *src, char c)
 {
@@ -17,10 +16,10 @@ static int contain(char *src, char c)
     return 84;
 }
 
-static void handle_add(char *user_input)
+static void handle_add(char *user_input, config_t *config)
 {
     if (contain(user_input, '!') == 84)
-        history_add(&list, user_input);
+        history_add(&(config->list), user_input);
 }
 
 int input_not_empty(char *user_input)
@@ -79,7 +78,7 @@ int mysh(char ***env)
         if (my_exit(user_input, &exit))
             break;
         fill_env(&config.env);
-        handle_add(user_input);
+        handle_add(user_input, &config);
         exit = process_multiple_command(user_input, &config);
         free(user_input);
         user_input = NULL;

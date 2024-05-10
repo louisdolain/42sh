@@ -12,8 +12,11 @@
 #include <string.h>
 #include "bulletin.h"
 
-void process_history(char ***parsed_input, config_t *, int *, history_t **list)
+void process_history(char ***parsed_input,
+    config_t *config, int *, history_t **)
 {
+    history_t **list = &(config->list);
+
     if ((*parsed_input)[0][0] == '!')
         return exclamation_mark(list, (*parsed_input)[0], parsed_input);
     if (my_strcmp((*parsed_input)[0], "history") == 0) {

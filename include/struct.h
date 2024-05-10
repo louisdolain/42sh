@@ -7,6 +7,9 @@
 
 #pragma once
 
+#include "history.h"
+
 typedef struct config_s {
     char **env;
+    history_t *list;
 } config_t;

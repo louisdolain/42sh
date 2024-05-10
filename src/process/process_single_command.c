@@ -29,7 +29,7 @@ int process_parent(pid_t pid, char ***parsed_input,
         if (((*parsed_input)[0][0] == '!' &&
             strncmp(BULLETIN_ARRAY[i].bulletin, "!", 1) == 0) ||
             strcmp(BULLETIN_ARRAY[i].bulletin, (*parsed_input)[0]) == 0) {
-            BULLETIN_ARRAY[i].function(parsed_input, config, &res, &list);
+            BULLETIN_ARRAY[i].function(parsed_input, config, &res, NULL);
             break;
         }
     }
