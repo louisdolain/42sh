@@ -132,7 +132,6 @@ int process_command(char *command, char ***env)
     char **bin_path_list = get_bin_path_list(*env);
     char **parsed_input = NULL;
     char **paths = NULL;
-    pid_t pid;
 
     handle_quotes(command);
     parsed_input = my_str_to_all_array(command, " \t");
