@@ -22,6 +22,7 @@ int process_parent(pid_t pid, char ***parsed_input,
     int status;
     int res;
     char *temp = strdup(*parsed_input[0]);
+    static alias_t* alias_list;
 
     waitpid(pid, &status, 0);
     res = WEXITSTATUS(status);

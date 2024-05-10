@@ -9,7 +9,7 @@
 
 #include <string.h>
 #include <fcntl.h>
-#include <alias.h>
+#include "alias.h"
 #include "history.h"
 #include "basics.h"
 
