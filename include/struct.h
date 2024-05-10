@@ -7,6 +7,6 @@
 
 #pragma once
 
-typedef struct config_s{
+typedef struct config_s {
     char **env;
 } config_t;

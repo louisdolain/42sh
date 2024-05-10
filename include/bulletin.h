@@ -19,7 +19,8 @@ typedef struct bulletins_s {
         config_t *config, int *res, history_t **list);
 } bulletins_t;
 
-void process_cd(char ***parsed_input, config_t *config, int *res, history_t **list);
+void process_cd(char ***parsed_input, config_t *config,
+    int *res, history_t **list);
 void process_env(char ***parsed_input,
     config_t *config, int *res, history_t **list);
 void process_segfault(int status, int *res);

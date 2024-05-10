@@ -18,7 +18,8 @@ static int process_single_token(token_t *token, config_t *config)
     return process_command(token->content, config);
 }
 
-static void process_token_right(token_t *token, int pipefd[2], config_t *config)
+static void process_token_right(token_t *token,
+    int pipefd[2], config_t *config)
 {
     int saved_stdout = dup(STDOUT_FILENO);
     int saved_stdin = dup(STDIN_FILENO);
