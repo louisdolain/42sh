@@ -58,9 +58,18 @@ int get_user_input(char **user_input, int exit)
     return getline(user_input, &byteread, stdin);
 }
 
+static config_t init_config(char ***env)
+{
+    config_t config = {0};
+
+    config.env = *env;
+    return config;
+}
+
 int mysh(char ***env)
 {
     char *user_input = NULL;
+    config_t config = init_config(env);
     int exit = 0;
 
     while (get_user_input(&user_input, exit) != EOF) {
@@ -69,15 +78,15 @@ int mysh(char ***env)
         replace_endline(user_input);
         if (my_exit(user_input, &exit))
             break;
-        fill_env(env);
+        fill_env(&config.env);
         handle_add(user_input);
-        exit = process_multiple_command(user_input, env);
+        exit = process_multiple_command(user_input, &config);
         free(user_input);
         user_input = NULL;
     }
     if (isatty(0))
         mini_printf("exit\n");
-    free_mysh(user_input, env);
+    free_mysh(user_input, &config);
     return exit;
 }
 

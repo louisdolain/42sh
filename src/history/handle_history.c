@@ -8,10 +8,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include "my.h"
 #include <string.h>
 #include "bulletin.h"
 
-void process_history(char ***parsed_input, char ***, int *, history_t **list)
+void process_history(char ***parsed_input, config_t *, int *, history_t **list)
 {
     if ((*parsed_input)[0][0] == '!')
         return exclamation_mark(list, (*parsed_input)[0], parsed_input);

@@ -17,7 +17,7 @@ static void clean_exiting_process(int status, int res,
 }
 
 int process_parent(pid_t pid, char ***parsed_input,
-    char **paths, char ***env)
+    char **paths, config_t *config)
 {
     int status;
     int res;
@@ -29,28 +29,28 @@ int process_parent(pid_t pid, char ***parsed_input,
         if (((*parsed_input)[0][0] == '!' &&
             strncmp(BULLETIN_ARRAY[i].bulletin, "!", 1) == 0) ||
             strcmp(BULLETIN_ARRAY[i].bulletin, (*parsed_input)[0]) == 0) {
-            BULLETIN_ARRAY[i].function(parsed_input, env, &res, &list);
+            BULLETIN_ARRAY[i].function(parsed_input, config, &res, &list);
             break;
         }
     }
     if (strcmp(*parsed_input[0], temp) > 0)
-        process_multiple_command(array_to_str(*parsed_input), env);
+        process_multiple_command(array_to_str(*parsed_input), config);
     free(temp);
     clean_exiting_process(status, res, parsed_input, paths);
     return res;
 }
 
-int process_child(char ***parsed_input, char **paths, char ***env)
+int process_child(char ***parsed_input, char **paths, config_t *config)
 {
     for (int i = 0; BULLETIN_ARRAY[i].bulletin; i++)
         if (((*parsed_input)[0][0] == '!' &&
             strncmp(BULLETIN_ARRAY[i].bulletin, "!", 1) == 0) ||
         strcmp(BULLETIN_ARRAY[i].bulletin, (*parsed_input)[0]) == 0)
             exit(0);
-    execve((*parsed_input)[0], (*parsed_input), *env);
+    execve((*parsed_input)[0], (*parsed_input), config->env);
     execve_error((*parsed_input)[0]);
     for (int i = 0; paths[i] != NULL; i++)
-        execve(paths[i], (*parsed_input), *env);
+        execve(paths[i], (*parsed_input), config->env);
     write(2, (*parsed_input)[0], my_strlen((*parsed_input)[0]));
     write(2, ": Command not found.\n", 21);
     exit(1);
@@ -91,20 +91,20 @@ static void restore_quotes(char ***parsed_input)
 }
 
 int exec_cmd(char ***parsed_input,
-    char **paths, char ***env)
+    char **paths, config_t *config)
 {
     pid_t pid;
 
     pid = fork();
     if (pid == 0) {
-        process_child(parsed_input, paths, env);
+        process_child(parsed_input, paths, config);
     } else
-        return process_parent(pid, parsed_input, paths, env);
+        return process_parent(pid, parsed_input, paths, config);
     return 0;
 }
 
 static int handle_globbing(char ***parsed_input,
-    char **paths, char ***env)
+    char **paths, config_t *config)
 {
     glob_t globbuf;
     int i = 0;
@@ -124,12 +124,12 @@ static int handle_globbing(char ***parsed_input,
         return -1;
     }
     check_glob((*parsed_input), &globbuf, i);
-    return exec_cmd(&globbuf.gl_pathv, paths, env);
+    return exec_cmd(&globbuf.gl_pathv, paths, config);
 }
 
-int process_command(char *command, char ***env)
+int process_command(char *command, config_t *config)
 {
-    char **bin_path_list = get_bin_path_list(*env);
+    char **bin_path_list = get_bin_path_list(config->env);
     char **parsed_input = NULL;
     char **paths = NULL;
 
@@ -139,8 +139,8 @@ int process_command(char *command, char ***env)
     paths = get_fct_paths(bin_path_list, parsed_input[0]);
     if (contains_globbing_pattern(command)) {
         free_str_array(bin_path_list);
-        return handle_globbing(&parsed_input, paths, env);
+        return handle_globbing(&parsed_input, paths, config);
     }
     free_str_array(bin_path_list);
-    return exec_cmd(&parsed_input, paths, env);
+    return exec_cmd(&parsed_input, paths, config);
 }

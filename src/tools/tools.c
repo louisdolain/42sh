@@ -23,10 +23,10 @@ char **get_bin_path_list(char **env)
     return my_str_to_all_array(pathline + 5, ":");
 }
 
-void free_mysh(char *user_input, char ***env)
+void free_mysh(char *user_input, config_t *config)
 {
     free(user_input);
-    free_str_array(*env);
+    free_str_array(config->env);
     free_list(&list);
 }
 

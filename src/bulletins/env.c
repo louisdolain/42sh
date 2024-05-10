@@ -74,16 +74,16 @@ static void process_unsetenv(char ***parsed_input, char ***env)
     }
 }
 
-void process_env(char ***parsed_input, char ***env, int *res, history_t **)
+void process_env(char ***parsed_input, config_t *config, int *res, history_t **)
 {
     if (my_strcmp((*parsed_input)[0], "env") == 0) {
         *res = 0;
-        my_putstr_array(*env);
+        my_putstr_array(config->env);
     }
     if (my_strcmp((*parsed_input)[0], "setenv") == 0)
-        *res = process_setenv(parsed_input, env);
+        *res = process_setenv(parsed_input, &config->env);
     if (my_strcmp((*parsed_input)[0], "unsetenv") == 0) {
-        process_unsetenv(parsed_input, env);
+        process_unsetenv(parsed_input, &config->env);
         *res = 0;
     }
 }
