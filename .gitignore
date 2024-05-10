@@ -1,0 +1,12 @@
+#temp files
+*~*
+*#*
+*.o
+*.gc*
+*vgcore*
+*.log
+
+#binary
+mysh
+42sh
+
