@@ -13,7 +13,6 @@
 - **Parentheses**: `(command)`
 - **Variables**: Local and environment variables
 - **Special variables**: `term, precmd, cwdcmd, cwd, ignoreeof`
-- **Line editing**: Multiline support, dynamic rebinding, auto-completion
 - **Scripting**: Basic scripting capabilities
 
 ## Compilation
