@@ -1,0 +1,95 @@
+#!/bin/bash
+
+compare_output() {
+    input_commands="$1"
+
+    minishell_output=$(./42sh <<<"$input_commands")
+
+    tcsh_output=$(tcsh -c "$input_commands")
+
+    if [ "$minishell_output" == "$tcsh_output" ]; then
+        echo -e "\\033[0;32mTest passé avec succès.\033[0m\n\n----------------------\n"
+    else
+        echo -e "\033[0;31mTest échoué.\033[0m"
+        echo -e "mysh output."
+        echo -e "$minishell_output"
+        echo -e "\ntcsh output."
+        echo -e "$tcsh_output"
+    fi
+}
+
+generate_tests() {
+    commands=("$@")
+
+    for cmd in "${commands[@]}"; do
+        echo "Testing command: $cmd"
+        compare_output "$cmd"
+    done
+}
+
+commands=(
+    $'pwd'
+    $'ls'
+    $'echo Hello, World!'
+    $'id'
+    $'ls -lah /home'
+    $'pwd'
+    $'id'
+    $'exitt'
+    $'ls -lah /home'
+    $'setenv fraise desbois'
+    $'unsetenv fraise'
+    $'unsetenv'
+    $'setenv ok=2'
+    $'setenv @PATH 4'
+    $'setenv TOO MANY ARGS'
+    $'pwd'
+    $'cd /tmp\npwd'
+    $'pwd'
+    $'cd /usr/local/share\n pwd'
+    $'pwd'
+    $'cd ..'
+    $'pwd'
+    $'cd testses.json'
+    $'pwd'
+    $'cd /unknownfile\ncd ~\npwd'
+    $'pwd'
+    $'cd /bin/bash\npwd'clear
+
+    $'pwd'
+    $'cd /boot'
+    $'pwd'
+    $'pwd'
+    $'cd /tmp'
+    $'pwd'
+    $'cd /var'
+    $'pwd'
+    $'cd -'
+    $'pwd'
+    $'cd\ncd -\ncd -\npwd'
+    $'pwd'
+    $' ls /tmp'
+    $'  ls  /tmp'
+    $'   ls   -l    /tmp'
+    $'\tls  \t\t  -l'
+    $'cd /unknownfile\npwd'
+    $'cd /tmp\n./unknown'
+    $'ls /nonexistent'
+    $'exit qqd'
+    $'ls -l | grep mysh'
+    $'ls; ls -l ; cat -e < Makefile | grep lib'
+    $'rm -f filetotest; cat -e < Makefile > filetotest; cat filetotest | grep lib'
+    $'(ls -l ; echo hello) | cat -e > file ; cat < file'
+    $'((ls -l ; cat < Makefile; echo Hello) | cat -e ; cat Makefile) | grep lib ; cat src/main.c'
+    $'rm -rf gros ; ((ls -l | cat -e) ; mkdir gros ; (ls -l | grep gros) ; rm -rf gros)'
+    $'rm -rf file filetotest'
+    $'echo f*'
+    $'echo *.c'
+    $'echo [a-z]*'
+    $'echo ???.c'
+    $'echo file[abc].txt'
+    $'echo file[!abc].txt'
+    $'ls *.c'
+    $'rm *.o'
+)
+generate_tests "${commands[@]}"
