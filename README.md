@@ -4,6 +4,8 @@
 
 ## Features
 
+- **Redirections**: `<, >, <<, >>`
+- **Pipes**: `|`
 - **Job control**: `&, fg, bg`
 - **History expansion**: `!`
 - **Aliases**: Example: `alias ls "ls --color"`
